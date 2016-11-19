@@ -1,0 +1,10 @@
+package: github.com/boundedinfinity/devenv
+import:
+- package: github.com/spf13/viper
+- package: github.com/spf13/cobra
+- package: github.com/Sirupsen/logrus
+  version: v0.11.0
+- package: github.com/sethgrid/pester
+- package: github.com/jteeuwen/go-bindata
+  version: v3.0.7
+- package: github.com/elazarl/go-bindata-assetfs
