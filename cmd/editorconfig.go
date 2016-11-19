@@ -6,23 +6,21 @@ import (
     "log"
 )
 
-var editorconfigCmd = &cobra.Command{
+var editorconfigCommand = &cobra.Command{
     Use:   "editorconfig",
     Short: "Create an .editorconfig file",
     Long:  `Create an .editorconfig file`,
-    Run:   editorconfigCallback,
-}
-
-func editorconfigCallback(cmd *cobra.Command, args []string) {
-    manager := editorconfig.NewEditorConfigManager()
-
-    if err := manager.Write(); err != nil {
-        log.Printf("error: %s", err.Error())
-    }
+    Run:   func(cmd *cobra.Command, args []string) {
+        manager := editorconfig.NewEditorConfigManager()
+        if err := manager.Write(); err != nil {
+            log.Printf("error: %s", err.Error())
+        }
+    },
 }
 
 func init() {
-    assignFileFlags(editorconfigCmd.Flags())
-    RootCmd.AddCommand(editorconfigCmd)
+    RootCommand.AddCommand(editorconfigCommand)
+
+    assignFileFlags(editorconfigCommand.Flags())
 }
 

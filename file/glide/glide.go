@@ -28,7 +28,7 @@ func (this *GlideManager) Write() error {
     fm := file.FileManager{
         GlobalConfig: this.GlobalConfig,
         FileConfig: this.FileConfig,
-        FileName: "glide.yml",
+        FileName: "glide.yaml",
     }
 
     if err1 := fm.Validate(); err1 != nil {
@@ -37,8 +37,10 @@ func (this *GlideManager) Write() error {
 
     tm := file.TemplateManager{
         GlobalConfig: this.GlobalConfig,
-        TemplatePath: "glide/glide.yml",
-        TemplateData: templateData{},
+        TemplatePath: "glide/glide.yaml",
+        TemplateData: templateData{
+            PackageName: this.GoConfig.GoPackageName(),
+        },
     }
 
     data, err2 := tm.Render()

@@ -10,7 +10,7 @@ const (
     Flag_GoPackageName = "go-package-name"
 )
 
-// Default
+// Defaults
 
 const (
     Flag_Default_GoPackageName = "main"

@@ -10,7 +10,7 @@ const (
     Flag_Quiet = "quiet"
 )
 
-// Default
+// Defaults
 
 const (
     Flag_Default_Debug = false

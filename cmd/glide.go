@@ -6,23 +6,21 @@ import (
     "log"
 )
 
-var glideCmd = &cobra.Command{
+var glideCommand = &cobra.Command{
     Use:   "glide",
-    Short: "Create a glide.yml file",
-    Long:  `Create a glide.yml file`,
-    Run:   glideCallback,
-}
-
-func glideCallback(cmd *cobra.Command, args []string) {
-    manager := glide.NewGlideManager()
-
-    if err := manager.Write(); err != nil {
-        log.Printf("error: %s", err.Error())
-    }
+    Short: "Create a glide.yaml file",
+    Long:  `Create a glide.yaml file`,
+    Run:   func(cmd *cobra.Command, args []string) {
+        manager := glide.NewGlideManager()
+        if err := manager.Write(); err != nil {
+            log.Printf("error: %s", err.Error())
+        }
+    },
 }
 
 func init() {
-    assignGoFlags(glideCmd.Flags())
-    assignFileFlags(glideCmd.Flags())
-    RootCmd.AddCommand(glideCmd)
+    RootCommand.AddCommand(glideCommand)
+
+    assignGoFlags(glideCommand.Flags())
+    assignFileFlags(glideCommand.Flags())
 }

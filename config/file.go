@@ -13,7 +13,7 @@ const (
     Flag_FileMode = "file-mode"
 )
 
-// Default
+// Defaults
 
 const (
     Flag_Default_Overwrite = false

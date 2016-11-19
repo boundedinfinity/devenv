@@ -10,7 +10,7 @@ const (
     Flag_ProjectName = "project-name"
 )
 
-// Default
+// Defaults
 
 const (
     Flag_Default_ProjectName = "generatedProject"

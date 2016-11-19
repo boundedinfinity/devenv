@@ -2,7 +2,7 @@
 // sources:
 // bindata.go
 // editorconfig/.editorconfig
-// glide/glide.yml
+// glide/glide.yaml
 // makefile/Makefile
 // DO NOT EDIT!
 
@@ -86,7 +86,7 @@ func bindataGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "bindata.go", size: 0, mode: os.FileMode(420), modTime: time.Unix(1479516897, 0)}
+	info := bindataFileInfo{name: "bindata.go", size: 0, mode: os.FileMode(420), modTime: time.Unix(1479540703, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -111,22 +111,22 @@ func editorconfigEditorconfig() (*asset, error) {
 	return a, nil
 }
 
-var _glideGlideYml = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x2a\x48\x4c\xce\x4e\x4c\x4f\xb5\x52\xa8\xae\xd6\x0b\x80\xb0\xfd\x12\x73\x53\x6b\x6b\xb9\x32\x73\x0b\xf2\x8b\x4a\xac\x14\xa2\x63\xb9\x00\x01\x00\x00\xff\xff\x5d\x8a\xe0\xe3\x25\x00\x00\x00")
+var _glideGlideYaml = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x2a\x48\x4c\xce\x4e\x4c\x4f\xb5\x52\xa8\xae\xd6\x0b\x80\xb0\xfd\x12\x73\x53\x6b\x6b\xb9\x32\x73\x0b\xf2\x8b\x4a\xac\x14\xa2\x63\xb9\x00\x01\x00\x00\xff\xff\x5d\x8a\xe0\xe3\x25\x00\x00\x00")
 
-func glideGlideYmlBytes() ([]byte, error) {
+func glideGlideYamlBytes() ([]byte, error) {
 	return bindataRead(
-		_glideGlideYml,
-		"glide/glide.yml",
+		_glideGlideYaml,
+		"glide/glide.yaml",
 	)
 }
 
-func glideGlideYml() (*asset, error) {
-	bytes, err := glideGlideYmlBytes()
+func glideGlideYaml() (*asset, error) {
+	bytes, err := glideGlideYamlBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "glide/glide.yml", size: 37, mode: os.FileMode(420), modTime: time.Unix(1479515893, 0)}
+	info := bindataFileInfo{name: "glide/glide.yaml", size: 37, mode: os.FileMode(420), modTime: time.Unix(1479515893, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -205,7 +205,7 @@ func AssetNames() []string {
 var _bindata = map[string]func() (*asset, error){
 	"bindata.go": bindataGo,
 	"editorconfig/.editorconfig": editorconfigEditorconfig,
-	"glide/glide.yml": glideGlideYml,
+	"glide/glide.yaml": glideGlideYaml,
 	"makefile/Makefile": makefileMakefile,
 }
 
@@ -254,7 +254,7 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		".editorconfig": &bintree{editorconfigEditorconfig, map[string]*bintree{}},
 	}},
 	"glide": &bintree{nil, map[string]*bintree{
-		"glide.yml": &bintree{glideGlideYml, map[string]*bintree{}},
+		"glide.yaml": &bintree{glideGlideYaml, map[string]*bintree{}},
 	}},
 	"makefile": &bintree{nil, map[string]*bintree{
 		"Makefile": &bintree{makefileMakefile, map[string]*bintree{}},

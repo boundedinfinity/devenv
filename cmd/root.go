@@ -9,14 +9,14 @@ import (
 
 var cfgFile string
 
-var RootCmd = &cobra.Command{
+var RootCommand = &cobra.Command{
     Use:   "devenv",
     Short: "Tame your development environment",
     Long:  `Tame your development environment`,
 }
 
 func Execute() {
-    if err := RootCmd.Execute(); err != nil {
+    if err := RootCommand.Execute(); err != nil {
         fmt.Println(err)
         os.Exit(-1)
     }
@@ -24,8 +24,8 @@ func Execute() {
 
 func init() {
     cobra.OnInitialize(initConfig)
-    assignGlobalFlags(RootCmd.PersistentFlags())
-    RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.devenv.yaml)")
+    assignGlobalFlags(RootCommand.PersistentFlags())
+    RootCommand.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.devenv.yaml)")
 }
 
 func initConfig() {
