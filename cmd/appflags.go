@@ -40,7 +40,8 @@ func initProjectFlags() {
 func initFileFlags() {
     appFlags.StringP(config.Flag_ProjectPath, "p", config.Flag_Default_ProjectPath, "Project path")
     appFlags.BoolP(config.Flag_Overwrite, "o", config.Flag_Default_Overwrite, "Overwrite file if it exists")
-    appFlags.Uint32P(config.Flag_FileMode, "m", config.Flag_Default_Flag_FileMode, "File mode")
+    //appFlags.Uint32P(config.Flag_FileMode, "m", config.Flag_Default_Flag_FileMode, "File mode")
+    appFlags.StringP(config.Flag_FileMode, "m", config.Flag_Default_Flag_FileMode, "File mode")
 }
 
 func initGoFlags() {

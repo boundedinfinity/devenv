@@ -76,7 +76,9 @@ func (this *FileManager) Validate() error {
 }
 
 func (this *FileManager) Write(data []byte) error {
-    log.Printf("Writing %s to %s", this.FileName, this.absFilePath)
+    if !this.GlobalConfig.Quiet() {
+        log.Printf("Writing %s to %s [mode: %s]", this.FileName, this.absFilePath, this.FileConfig.FileMode())
+    }
 
     if err := ioutil.WriteFile(this.absFilePath, data, this.FileConfig.FileMode()); err != nil {
         return err

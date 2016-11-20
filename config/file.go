@@ -3,6 +3,7 @@ package config
 import (
     "github.com/spf13/viper"
     "os"
+    "strconv"
 )
 
 // Flags
@@ -18,7 +19,7 @@ const (
 const (
     Flag_Default_Overwrite = false
     Flag_Default_ProjectPath = "."
-    Flag_Default_Flag_FileMode uint32 = 755
+    Flag_Default_Flag_FileMode = "0755"
 )
 
 func init() {
@@ -38,5 +39,8 @@ func (this FileConfig) ProjectPath() string {
 }
 
 func (this FileConfig) FileMode() os.FileMode {
-    return os.FileMode(viper.GetInt(Flag_FileMode))
+    val1 := viper.GetString(Flag_FileMode)
+    val2, _ := strconv.ParseUint(val1, 0, 32)
+    val3 := os.FileMode(val2)
+    return os.FileMode(val3)
 }
