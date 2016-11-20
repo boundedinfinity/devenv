@@ -66,6 +66,10 @@ func assignFileFlags(flagSet *flag.FlagSet) {
     bindFlag(flagSet, config.Flag_FileMode)
 }
 
+func assignDirFlags(flagSet *flag.FlagSet) {
+    bindFlag(flagSet, config.Flag_FileMode)
+}
+
 func assignGoFlags(flagSet *flag.FlagSet) {
     bindFlag(flagSet, config.Flag_GoPackageName)
 }

@@ -44,3 +44,12 @@ func (this FileConfig) FileMode() os.FileMode {
     val3 := os.FileMode(val2)
     return os.FileMode(val3)
 }
+
+type DirConfig struct{}
+
+func (this DirConfig) FileMode() os.FileMode {
+    val1 := viper.GetString(Flag_FileMode)
+    val2, _ := strconv.ParseUint(val1, 0, 32)
+    val3 := os.FileMode(val2)
+    return os.FileMode(val3)
+}

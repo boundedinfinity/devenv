@@ -1,5 +1,5 @@
-hash: d6e7e7fe75a6af10621884f1ddee77215658925b7d5b71cbe9d8c18df24d834b
-updated: 2016-11-18T12:59:45.433902977-07:00
+hash: 0dfaa227f121f17abf0afb36ec9089d9507ed77d605c15b20ba45626203a6b84
+updated: 2016-11-20T00:27:50.007932915-07:00
 imports:
 - name: github.com/elazarl/go-bindata-assetfs
   version: 9a6736ed45b44bf3835afeebb3034b57ed329f3e

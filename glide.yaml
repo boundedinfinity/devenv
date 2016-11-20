@@ -8,3 +8,5 @@ import:
 - package: github.com/jteeuwen/go-bindata
   version: v3.0.7
 - package: github.com/elazarl/go-bindata-assetfs
+- package: github.com/spf13/afero
+- package: github.com/spf13/cast
