@@ -37,7 +37,7 @@ func (this *MakefileManager) Write() error {
 
     tm := file.TemplateManager{
         GlobalConfig: this.GlobalConfig,
-        TemplatePath: "makefile/Makefile",
+        TemplatePath: "project/makefile/Makefile",
         TemplateData: templateData{
             ProjectName: this.ProjectConfig.ProjectName(),
         },

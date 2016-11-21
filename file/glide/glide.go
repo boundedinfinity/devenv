@@ -37,7 +37,7 @@ func (this *GlideManager) Write() error {
 
     tm := file.TemplateManager{
         GlobalConfig: this.GlobalConfig,
-        TemplatePath: "glide/glide.yaml",
+        TemplatePath: "project/glide/glide.yaml",
         TemplateData: templateData{
             PackageName: this.GoConfig.GoPackageName(),
         },

@@ -33,7 +33,7 @@ func (this *EditorConfigManager) Write() error {
 
     tm := file.TemplateManager{
         GlobalConfig: this.GlobalConfig,
-        TemplatePath: "editorconfig/.editorconfig",
+        TemplatePath: "project/editorconfig/.editorconfig",
         TemplateData: templateData{},
     }
 
