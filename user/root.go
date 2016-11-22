@@ -9,11 +9,13 @@ import (
     "fmt"
     "github.com/boundedinfinity/devenv/data"
     "path/filepath"
+    "github.com/boundedinfinity/devenv/file"
 )
 
 func NewUserConfigManager() *UserConfigManager {
     return &UserConfigManager{
         GlobalConfig: config.GlobalConfig{},
+        FileConfig: config.FileConfig{},
         data: newDataDescriptor(),
     }
 }
@@ -21,6 +23,7 @@ func NewUserConfigManager() *UserConfigManager {
 type UserConfigManager struct {
     GlobalConfig config.GlobalConfig
     DirConfig    config.DirConfig
+    FileConfig   config.FileConfig
     realDir      string
     data         *dataDescriptor
 }
@@ -76,6 +79,44 @@ func (this *UserConfigManager) ensureScriptDDirectories() error {
                 return err
             }
         }
+    }
+
+    for dataPath, fsPath := range this.data.files {
+        if err := this.copyFile(dataPath, fsPath); err != nil {
+            return err
+        }
+    }
+
+    return nil
+}
+
+type templateData struct {}
+
+func (this *UserConfigManager) copyFile(dataPath string, fsPath string) error {
+    fm := file.FileManager{
+        GlobalConfig: this.GlobalConfig,
+        FileConfig: this.FileConfig,
+        Path: fsPath,
+    }
+
+    if err1 := fm.Validate(); err1 != nil {
+        return err1
+    }
+
+    tm := file.TemplateManager{
+        GlobalConfig: this.GlobalConfig,
+        TemplatePath: dataPath,
+        TemplateData: templateData{},
+    }
+
+    data, err2 := tm.Render()
+
+    if err2 != nil {
+        return err2
+    }
+
+    if err3 := fm.Write(data); err3 != nil {
+        return err3
     }
 
     return nil

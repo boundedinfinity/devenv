@@ -4,27 +4,43 @@ import (
     "github.com/boundedinfinity/devenv/config"
     "log"
     "github.com/boundedinfinity/devenv/file"
+    "github.com/boundedinfinity/devenv/project"
+    "path"
 )
 
 func NewEditorConfigManager() *EditorConfigManager {
     return &EditorConfigManager{
         GlobalConfig: config.GlobalConfig{},
+        ProjectConfig: config.ProjectConfig{},
+        DirConfig: config.DirConfig{},
         FileConfig: config.FileConfig{},
     }
 }
 
 type EditorConfigManager struct {
     GlobalConfig config.GlobalConfig
+    ProjectConfig config.ProjectConfig
+    DirConfig     config.DirConfig
     FileConfig   config.FileConfig
 }
 
 type templateData struct{}
 
 func (this *EditorConfigManager) Write() error {
+    pm := project.ProjectManager{
+        GlobalConfig: this.GlobalConfig,
+        ProjectConfig: this.ProjectConfig,
+        DirConfig: this.DirConfig,
+    }
+
+    if err := pm.Validate(); err != nil {
+        return err
+    }
+
     fm := file.FileManager{
         GlobalConfig: this.GlobalConfig,
         FileConfig: this.FileConfig,
-        FileName: ".editorconfig",
+        Path: path.Join(this.ProjectConfig.ProjectPath(), ".editorconfig"),
     }
 
     if err1 := fm.Validate(); err1 != nil {

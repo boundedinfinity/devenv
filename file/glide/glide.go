@@ -4,31 +4,47 @@ import (
     "github.com/boundedinfinity/devenv/config"
     "log"
     "github.com/boundedinfinity/devenv/file"
+    "github.com/boundedinfinity/devenv/project"
+    "path"
 )
 
 func NewGlideManager() *GlideManager {
     return &GlideManager{
         GlobalConfig: config.GlobalConfig{},
         FileConfig: config.FileConfig{},
+        ProjectConfig: config.ProjectConfig{},
+        DirConfig: config.DirConfig{},
         GoConfig: config.GoConfig{},
     }
 }
 
 type GlideManager struct {
-    GlobalConfig config.GlobalConfig
-    FileConfig   config.FileConfig
-    GoConfig     config.GoConfig
+    GlobalConfig  config.GlobalConfig
+    ProjectConfig config.ProjectConfig
+    DirConfig     config.DirConfig
+    FileConfig    config.FileConfig
+    GoConfig      config.GoConfig
 }
 
-type templateData struct{
+type templateData struct {
     PackageName string
 }
 
 func (this *GlideManager) Write() error {
+    pm := project.ProjectManager{
+        GlobalConfig: this.GlobalConfig,
+        ProjectConfig: this.ProjectConfig,
+        DirConfig: this.DirConfig,
+    }
+
+    if err := pm.Validate(); err != nil {
+        return err
+    }
+
     fm := file.FileManager{
         GlobalConfig: this.GlobalConfig,
         FileConfig: this.FileConfig,
-        FileName: "glide.yaml",
+        Path: path.Join(this.ProjectConfig.ProjectPath(), "glide.yaml"),
     }
 
     if err1 := fm.Validate(); err1 != nil {

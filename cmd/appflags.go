@@ -58,10 +58,10 @@ func assignGlobalFlags(flagSet *flag.FlagSet) {
 
 func assignProjectFlags(flagSet *flag.FlagSet) {
     bindFlag(flagSet, config.Flag_ProjectName)
+    bindFlag(flagSet, config.Flag_ProjectPath)
 }
 
 func assignFileFlags(flagSet *flag.FlagSet) {
-    bindFlag(flagSet, config.Flag_ProjectPath)
     bindFlag(flagSet, config.Flag_Overwrite)
     bindFlag(flagSet, config.Flag_FileMode)
 }

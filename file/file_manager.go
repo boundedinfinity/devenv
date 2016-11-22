@@ -5,54 +5,43 @@ import (
     "os"
     "fmt"
     "github.com/boundedinfinity/devenv/config"
-    "io/ioutil"
     "errors"
     "log"
+    "github.com/spf13/afero"
 )
 
 type FileManager struct {
-    GlobalConfig   config.GlobalConfig
-    FileConfig     config.FileConfig
-    FileName       string
-    absProjectPath string
-    absFilePath    string
+    GlobalConfig config.GlobalConfig
+    FileConfig   config.FileConfig
+    Path         string
+    absFilePath  string
+    absDirPath   string
 }
 
 func (this *FileManager) Validate() error {
     if this.GlobalConfig.Debug() {
-        log.Printf("projectPath: %s", this.FileConfig.ProjectPath())
+        log.Printf("Path: %s", this.Path)
     }
 
-    absProjectPath, err1 := filepath.Abs(this.FileConfig.ProjectPath())
+    aaaa, err1 := filepath.Abs(this.Path)
 
     if err1 != nil {
         return err1
     }
 
-    this.absProjectPath = absProjectPath
+    this.absFilePath = filepath.Dir(aaaa)
 
     if this.GlobalConfig.Debug() {
-        log.Printf("absProjectPath: %s", absProjectPath)
+        log.Printf("absFilePath: %s", this.absFilePath)
     }
 
-    projectPathInfo, err2 := os.Stat(absProjectPath)
-
-    if err2 != nil {
-        return err2
-    }
-
-    if !projectPathInfo.IsDir() {
-        return errors.New(fmt.Sprintf("%s must be directory", config.Flag_ProjectPath))
-    }
-
-    absFilePath := filepath.Join(absProjectPath, this.FileName)
-    this.absFilePath = absFilePath
+    this.absDirPath = filepath.Dir(this.absFilePath)
 
     if this.GlobalConfig.Debug() {
-        log.Printf("absFilePath: %s", absFilePath)
+        log.Printf("absDirPath: %s", this.absDirPath)
     }
 
-    _, absFileErr := os.Stat(absFilePath)
+    _, absFileErr := os.Stat(this.absFilePath)
 
     if this.GlobalConfig.Debug() {
         log.Printf("absFileErr: %v", absFileErr)
@@ -60,11 +49,11 @@ func (this *FileManager) Validate() error {
 
     if os.IsNotExist(absFileErr) {
         if this.GlobalConfig.Debug() {
-            log.Printf("%s doesn't exists", this.FileName)
+            log.Printf("%s doesn't exists", this.absFilePath)
         }
     } else {
         if !this.FileConfig.Overwrite() {
-            return errors.New(fmt.Sprintf("%s already exists", absFilePath))
+            return errors.New(fmt.Sprintf("%s already exists", this.absFilePath))
         }
     }
 
@@ -76,11 +65,25 @@ func (this *FileManager) Validate() error {
 }
 
 func (this *FileManager) Write(data []byte) error {
-    if !this.GlobalConfig.Quiet() {
-        log.Printf("Writing %s to %s [mode: %s]", this.FileName, this.absFilePath, this.FileConfig.FileMode())
+    fs := afero.NewOsFs()
+
+    dirExists, err := afero.DirExists(fs, this.absDirPath)
+
+    if err != nil {
+        return err
     }
 
-    if err := ioutil.WriteFile(this.absFilePath, data, this.FileConfig.FileMode()); err != nil {
+    if !dirExists {
+        if err := os.MkdirAll(this.absDirPath, this.FileConfig.FileMode()); err != nil {
+            return err
+        }
+    }
+
+    if !this.GlobalConfig.Quiet() {
+        log.Printf("Writing %s [mode: %s]", this.absFilePath, this.FileConfig.FileMode())
+    }
+
+    if err := afero.WriteFile(fs, this.absFilePath, data, this.FileConfig.FileMode()); err != nil {
         return err
     }
 
