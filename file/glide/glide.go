@@ -37,7 +37,7 @@ func (this *GlideManager) Write() error {
         DirConfig: this.DirConfig,
     }
 
-    if err := pm.Validate(); err != nil {
+    if err := pm.validate(); err != nil {
         return err
     }
 

@@ -2,12 +2,13 @@ package cmd
 
 import (
     "github.com/spf13/cobra"
-    "fmt"
     "os"
     "github.com/spf13/viper"
+    "github.com/boundedinfinity/devenv/logging"
 )
 
 var cfgFile string
+var logger = logging.ComponentLogger("RootCommand")
 
 var RootCommand = &cobra.Command{
     Use:   "devenv",
@@ -17,7 +18,7 @@ var RootCommand = &cobra.Command{
 
 func Execute() {
     if err := RootCommand.Execute(); err != nil {
-        fmt.Println(err)
+        logger.Errorf(err)
         os.Exit(-1)
     }
 }
@@ -40,6 +41,6 @@ func initConfig() {
 
     // If a config file is found, read it in.
     if err := viper.ReadInConfig(); err == nil {
-        fmt.Println("Using config file:", viper.ConfigFileUsed())
+        logger.Errorf("Using config file:", viper.ConfigFileUsed())
     }
 }

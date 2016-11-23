@@ -6,9 +6,19 @@ import (
     "fmt"
     "github.com/boundedinfinity/devenv/config"
     "errors"
-    "log"
     "github.com/spf13/afero"
+    "github.com/boundedinfinity/devenv/logging"
 )
+
+var logger = logging.ComponentLogger("FileManager")
+
+func NewFileManager(path string) *FileManager {
+    return &FileManager{
+        GlobalConfig: config.GlobalConfig{},
+        FileConfig: config.FileConfig{},
+        Path: path,
+    }
+}
 
 type FileManager struct {
     GlobalConfig config.GlobalConfig
@@ -20,45 +30,37 @@ type FileManager struct {
 
 func (this *FileManager) Validate() error {
     if this.GlobalConfig.Debug() {
-        log.Printf("Path: %s", this.Path)
+        logger.Infof("Path: %s", this.Path)
     }
 
-    aaaa, err1 := filepath.Abs(this.Path)
+    absFilePath, err1 := filepath.Abs(this.Path)
 
     if err1 != nil {
         return err1
     }
 
-    this.absFilePath = filepath.Dir(aaaa)
+    this.absFilePath = absFilePath
 
     if this.GlobalConfig.Debug() {
-        log.Printf("absFilePath: %s", this.absFilePath)
+        logger.Infof("this.absFilePath: %s", this.absFilePath)
     }
 
     this.absDirPath = filepath.Dir(this.absFilePath)
 
     if this.GlobalConfig.Debug() {
-        log.Printf("absDirPath: %s", this.absDirPath)
+        logger.Infof("this.absDirPath: %s", this.absDirPath)
     }
 
     _, absFileErr := os.Stat(this.absFilePath)
 
-    if this.GlobalConfig.Debug() {
-        log.Printf("absFileErr: %v", absFileErr)
-    }
-
     if os.IsNotExist(absFileErr) {
         if this.GlobalConfig.Debug() {
-            log.Printf("%s doesn't exists", this.absFilePath)
+            logger.Infof("%s doesn't exists", this.absFilePath)
         }
     } else {
         if !this.FileConfig.Overwrite() {
             return errors.New(fmt.Sprintf("%s already exists", this.absFilePath))
         }
-    }
-
-    if this.GlobalConfig.Debug() {
-        log.Printf("validated")
     }
 
     return nil
@@ -80,7 +82,7 @@ func (this *FileManager) Write(data []byte) error {
     }
 
     if !this.GlobalConfig.Quiet() {
-        log.Printf("Writing %s [mode: %s]", this.absFilePath, this.FileConfig.FileMode())
+        logger.Infof("Writing %s [mode: %s]", this.absFilePath, this.FileConfig.FileMode())
     }
 
     if err := afero.WriteFile(fs, this.absFilePath, data, this.FileConfig.FileMode()); err != nil {

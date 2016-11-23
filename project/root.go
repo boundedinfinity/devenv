@@ -2,24 +2,35 @@ package project
 
 import (
     "github.com/boundedinfinity/devenv/config"
-    "log"
     "path/filepath"
     "os"
     "fmt"
     "errors"
     "github.com/spf13/afero"
+    "github.com/boundedinfinity/devenv/logging"
+    "strings"
 )
+
+var pmroot = logging.ComponentLogger("ProjectManager")
+
+func NewProjectManager() *ProjectManager {
+    return &ProjectManager{
+        GlobalConfig: config.GlobalConfig{},
+        DirConfig: config.DirConfig{},
+        ProjectConfig: config.ProjectConfig{},
+    }
+}
 
 type ProjectManager struct {
     GlobalConfig  config.GlobalConfig
     DirConfig     config.DirConfig
     ProjectConfig config.ProjectConfig
-    absPath       string
+    AbsPath       string
 }
 
-func (this *ProjectManager) Validate() error {
-    if this.GlobalConfig.Debug() {
-        log.Printf("projectPath: %s", this.ProjectConfig.ProjectPath())
+func (this *ProjectManager) path2abs() error {
+    if this.AbsPath != "" {
+        return nil
     }
 
     absPath, err1 := filepath.Abs(this.ProjectConfig.ProjectPath())
@@ -28,13 +39,25 @@ func (this *ProjectManager) Validate() error {
         return err1
     }
 
-    this.absPath = absPath
+    this.AbsPath = absPath
 
     if this.GlobalConfig.Debug() {
-        log.Printf("absProjectPath: %s", absPath)
+        pmroot.Infof("Absolute Project Path: %s", absPath)
     }
 
-    pathInfo, err2 := os.Stat(absPath)
+    return nil
+}
+
+func (this *ProjectManager) validate() error {
+    if this.GlobalConfig.Debug() {
+        pmroot.Infof("Input Project Path: %s", this.ProjectConfig.ProjectPath())
+    }
+
+    if err := this.path2abs(); err != nil {
+        return err
+    }
+
+    pathInfo, err2 := os.Stat(this.AbsPath)
 
     if err2 != nil {
         return err2
@@ -49,12 +72,50 @@ func (this *ProjectManager) Validate() error {
 
 func (this *ProjectManager) EnsureDirectory() error {
     if !this.GlobalConfig.Quiet() {
-        log.Printf("Creating %s [mode: %s]", this.absPath, this.DirConfig.FileMode())
+        pmroot.Infof("Creating %s [mode: %s]", this.AbsPath, this.DirConfig.FileMode())
+    }
+
+    if err := this.validate(); err != nil {
+        if strings.Contains(err.Error(), "no such file or directory") {
+            // Ok
+        } else {
+            return err
+        }
     }
 
     fs := afero.NewOsFs()
 
-    if err := fs.MkdirAll(this.absPath, this.DirConfig.FileMode()); err != nil {
+    if err := fs.MkdirAll(this.AbsPath, this.DirConfig.FileMode()); err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func (this *ProjectManager) DeleteDirectory() error {
+    if this.GlobalConfig.Debug() {
+        pmroot.Infof("Input Project Path: %s", this.ProjectConfig.ProjectPath())
+    }
+
+    if err := this.path2abs(); err != nil {
+        return err
+    }
+
+    if !this.GlobalConfig.Quiet() {
+        pmroot.Infof("Deleting %s", this.AbsPath)
+    }
+
+    if err := this.validate(); err != nil {
+        if strings.Contains(err.Error(), "no such file or directory") {
+            return nil
+        } else {
+            return err
+        }
+    }
+
+    fs := afero.NewOsFs()
+
+    if err := fs.RemoveAll(this.AbsPath); err != nil {
         return err
     }
 

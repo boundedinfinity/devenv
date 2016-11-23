@@ -37,7 +37,7 @@ var projectMakefileCommand = &cobra.Command{
     Long:  `Create a Makefile`,
     Run:   func(cmd *cobra.Command, args []string) {
         manager := makefile.NewMakefileManager()
-        if err := manager.Write(); err != nil {
+        if err := manager.Ensure(); err != nil {
             log.Printf("error: %s", err.Error())
         }
     },

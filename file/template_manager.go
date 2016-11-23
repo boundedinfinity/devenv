@@ -5,8 +5,20 @@ import (
     "text/template"
     "github.com/boundedinfinity/devenv/data"
     "github.com/boundedinfinity/devenv/config"
-    "log"
+    "github.com/pkg/errors"
+    "fmt"
+    "github.com/boundedinfinity/devenv/logging"
 )
+
+var tlogger = logging.ComponentLogger("TemplateManager")
+
+func NewTemplateManager(templatePath string, templateData interface{}) *TemplateManager {
+    return &TemplateManager {
+        GlobalConfig: config.GlobalConfig{},
+        TemplatePath: templatePath,
+        TemplateData: templateData,
+    }
+}
 
 type TemplateManager struct{
     GlobalConfig config.GlobalConfig
@@ -16,8 +28,12 @@ type TemplateManager struct{
 
 func (this *TemplateManager) Render() ([]byte, error) {
     if this.GlobalConfig.Debug() {
-        log.Printf("TemplatePath: %s", this.TemplatePath)
-        log.Printf("TemplateData: %v", this.TemplateData)
+        tlogger.Infof("TemplatePath: %s", this.TemplatePath)
+        tlogger.Infof("TemplateData: %v", this.TemplateData)
+    }
+
+    if !TemplateExists(this.TemplatePath) {
+        return []byte{}, errors.New(fmt.Sprintf("template '%s' not found", this.TemplatePath))
     }
 
     content, err1 := data.Asset(this.TemplatePath)
@@ -38,4 +54,17 @@ func (this *TemplateManager) Render() ([]byte, error) {
     }
 
     return buffer.Bytes(), nil
+}
+
+func TemplateExists(path string) bool {
+    found := false
+
+    for _, currentPath := range data.AssetNames() {
+        if currentPath == path {
+            found = true
+            break
+        }
+    }
+
+    return found
 }
