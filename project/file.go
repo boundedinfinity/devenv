@@ -33,7 +33,7 @@ type ProjectFileManager struct {
     TemplateData interface{}
 }
 
-func (this *ProjectFileManager) Validate() error {
+func (this *ProjectFileManager) validate() error {
     if this.GlobalConfig.Debug() {
         pfmlogger.Infof("this.TemplatePath: %s", this.TemplatePath)
     }
@@ -70,6 +70,10 @@ func (this *ProjectFileManager) Validate() error {
 }
 
 func (this *ProjectFileManager) Ensure() error {
+    if err := this.validate(); err != nil {
+        return err
+    }
+
     tm := file.NewTemplateManager(this.TemplatePath, this.TemplateData)
     data, err2 := tm.Render()
 

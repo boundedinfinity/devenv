@@ -1,5 +1,5 @@
-hash: 0dfaa227f121f17abf0afb36ec9089d9507ed77d605c15b20ba45626203a6b84
-updated: 2016-11-20T00:27:50.007932915-07:00
+hash: 89f40344fa3a1902f0ff93f33941fc87f553613c743a9c8b559b45533ad794a3
+updated: 2016-11-23T23:33:32.966073-07:00
 imports:
 - name: github.com/elazarl/go-bindata-assetfs
   version: 9a6736ed45b44bf3835afeebb3034b57ed329f3e
@@ -27,7 +27,9 @@ imports:
 - name: github.com/pelletier/go-buffruneio
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
-  version: 45932ad32dfdd20826f5671da37a5f3ce9f26a8d
+  version: 64ff1ea4d585bc1fca65e6331eb8239f2ff31845
+- name: github.com/pkg/errors
+  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/sethgrid/pester
   version: 2a102734c18c43c74fd0664e06cd414cf9602b93
 - name: github.com/Sirupsen/logrus

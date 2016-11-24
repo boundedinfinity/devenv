@@ -49,7 +49,7 @@ var projectEditorconfigCommand = &cobra.Command{
     Long:  `Create an .editorconfig file`,
     Run:   func(cmd *cobra.Command, args []string) {
         manager := editorconfig.NewEditorConfigManager()
-        if err := manager.Write(); err != nil {
+        if err := manager.Ensure(); err != nil {
             log.Printf("error: %s", err.Error())
         }
     },
@@ -57,11 +57,11 @@ var projectEditorconfigCommand = &cobra.Command{
 
 var projectGlideCommand = &cobra.Command{
     Use:   "glide",
-    Short: "Create a glide.yaml file",
-    Long:  `Create a glide.yaml file`,
+    Short: "Create a glide.yml file",
+    Long:  `Create a glide.yml file`,
     Run:   func(cmd *cobra.Command, args []string) {
         manager := glide.NewGlideManager()
-        if err := manager.Write(); err != nil {
+        if err := manager.Ensure(); err != nil {
             log.Printf("error: %s", err.Error())
         }
     },

@@ -10,3 +10,5 @@ import:
 - package: github.com/elazarl/go-bindata-assetfs
 - package: github.com/spf13/afero
 - package: github.com/spf13/cast
+- package: github.com/pelletier/go-toml
+  version: v0.3.5

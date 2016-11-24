@@ -24,10 +24,6 @@ type templateData struct {
 }
 
 func (this *MakefileManager) Ensure() error {
-    if err := this.Pfm.Validate(); err != nil {
-        return err
-    }
-
     if err := this.Pfm.Ensure(); err != nil {
         return err
     }

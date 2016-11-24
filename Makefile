@@ -6,6 +6,7 @@ list:
 	@grep '^[^#[:space:]].*:' Makefile | grep -v ':=' | grep -v '^\.' | sed 's/:.*//g' | sed 's/://g' | sort
 
 project-bootstrap:
+	brew install glide
 	make go-bootstrap
 
 project-clean:
