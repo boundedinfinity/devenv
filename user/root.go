@@ -3,27 +3,26 @@ package user
 import (
     "github.com/boundedinfinity/devenv/config"
     "github.com/spf13/afero"
-    "log"
     "strings"
     "github.com/boundedinfinity/devenv/shell"
     "fmt"
     "github.com/boundedinfinity/devenv/data"
     "path/filepath"
     "github.com/boundedinfinity/devenv/file"
+    "github.com/boundedinfinity/devenv/logging"
 )
+
+var logger = logging.ComponentLogger("UserConfigManager")
 
 func NewUserConfigManager() *UserConfigManager {
     return &UserConfigManager{
-        GlobalConfig: config.GlobalConfig{},
-        FileConfig: config.FileConfig{},
+        GlobalConfig: config.NewGlobalConfig(),
         data: newDataDescriptor(),
     }
 }
 
 type UserConfigManager struct {
     GlobalConfig config.GlobalConfig
-    DirConfig    config.DirConfig
-    FileConfig   config.FileConfig
     realDir      string
     data         *dataDescriptor
 }
@@ -59,7 +58,7 @@ func (this *UserConfigManager) ensureScriptDDirectories() error {
 
     if this.GlobalConfig.Debug() {
         for dataPath, fsPath := range this.data.dirs {
-            log.Printf("dataPath: [ %s ], fsPath: [ %s ]", dataPath, fsPath)
+            logger.Printf("dataPath: [ %s ], fsPath: [ %s ]", dataPath, fsPath)
         }
     }
 
@@ -73,9 +72,9 @@ func (this *UserConfigManager) ensureScriptDDirectories() error {
         }
 
         if !exists {
-            log.Printf("Creating: %s", fsPath)
+            logger.Printf("Creating: %s", fsPath)
 
-            if err := fs.MkdirAll(fsPath, this.DirConfig.FileMode()); err != nil {
+            if err := fs.MkdirAll(fsPath, this.GlobalConfig.DirConfig.FileMode()); err != nil {
                 return err
             }
         }
@@ -95,7 +94,6 @@ type templateData struct {}
 func (this *UserConfigManager) copyFile(dataPath string, fsPath string) error {
     fm := file.FileManager{
         GlobalConfig: this.GlobalConfig,
-        FileConfig: this.FileConfig,
         Path: fsPath,
     }
 
@@ -162,8 +160,8 @@ func (this *UserConfigManager) ensureConfigDir() error {
     }
 
     if !this.GlobalConfig.Quiet() {
-        log.Printf("Input Configuration Directory: %s", this.GlobalConfig.UserConfigDir())
-        log.Printf("Evaluated Configuration Directory: %s", this.realDir)
+        logger.Printf("Input Configuration Directory: %s", this.GlobalConfig.UserConfigDir())
+        logger.Printf("Evaluated Configuration Directory: %s", this.realDir)
     }
 
     fs := afero.NewOsFs()
@@ -175,9 +173,9 @@ func (this *UserConfigManager) ensureConfigDir() error {
     }
 
     if !exists {
-        log.Printf("Creating: %s", this.realDir)
+        logger.Printf("Creating: %s", this.realDir)
 
-        if err := fs.MkdirAll(this.realDir, this.DirConfig.FileMode()); err != nil {
+        if err := fs.MkdirAll(this.realDir, this.GlobalConfig.DirConfig.FileMode()); err != nil {
             return err
         }
     }

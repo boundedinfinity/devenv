@@ -2,12 +2,12 @@ package project
 
 import (
     "github.com/boundedinfinity/devenv/file"
+    "github.com/boundedinfinity/devenv/logging"
+    "github.com/boundedinfinity/devenv/config"
     "path/filepath"
     "fmt"
     "errors"
-    "github.com/boundedinfinity/devenv/logging"
     "strings"
-    "github.com/boundedinfinity/devenv/config"
 )
 
 var pfmlogger = logging.ComponentLogger("ProjectFileManager")

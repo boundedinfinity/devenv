@@ -2,29 +2,25 @@ package project
 
 import (
     "github.com/boundedinfinity/devenv/config"
+    "github.com/boundedinfinity/devenv/logging"
+    "github.com/spf13/afero"
     "path/filepath"
-    "os"
+    "strings"
     "fmt"
     "errors"
-    "github.com/spf13/afero"
-    "github.com/boundedinfinity/devenv/logging"
-    "strings"
+    "os"
 )
 
 var pmroot = logging.ComponentLogger("ProjectManager")
 
 func NewProjectManager() *ProjectManager {
     return &ProjectManager{
-        GlobalConfig: config.GlobalConfig{},
-        DirConfig: config.DirConfig{},
-        ProjectConfig: config.ProjectConfig{},
+        GlobalConfig: config.NewGlobalConfig(),
     }
 }
 
 type ProjectManager struct {
     GlobalConfig  config.GlobalConfig
-    DirConfig     config.DirConfig
-    ProjectConfig config.ProjectConfig
     AbsPath       string
 }
 
@@ -33,7 +29,7 @@ func (this *ProjectManager) path2abs() error {
         return nil
     }
 
-    absPath, err1 := filepath.Abs(this.ProjectConfig.ProjectPath())
+    absPath, err1 := filepath.Abs(this.GlobalConfig.ProjectConfig.ProjectPath())
 
     if err1 != nil {
         return err1
@@ -50,7 +46,7 @@ func (this *ProjectManager) path2abs() error {
 
 func (this *ProjectManager) validate() error {
     if this.GlobalConfig.Debug() {
-        pmroot.Infof("Input Project Path: %s", this.ProjectConfig.ProjectPath())
+        pmroot.Infof("Input Project Path: %s", this.GlobalConfig.ProjectConfig.ProjectPath())
     }
 
     if err := this.path2abs(); err != nil {
@@ -72,7 +68,7 @@ func (this *ProjectManager) validate() error {
 
 func (this *ProjectManager) EnsureDirectory() error {
     if !this.GlobalConfig.Quiet() {
-        pmroot.Infof("Creating %s [mode: %s]", this.AbsPath, this.DirConfig.FileMode())
+        pmroot.Infof("Creating %s [mode: %s]", this.AbsPath, this.GlobalConfig.DirConfig.FileMode())
     }
 
     if err := this.validate(); err != nil {
@@ -85,7 +81,7 @@ func (this *ProjectManager) EnsureDirectory() error {
 
     fs := afero.NewOsFs()
 
-    if err := fs.MkdirAll(this.AbsPath, this.DirConfig.FileMode()); err != nil {
+    if err := fs.MkdirAll(this.AbsPath, this.GlobalConfig.DirConfig.FileMode()); err != nil {
         return err
     }
 
@@ -94,7 +90,7 @@ func (this *ProjectManager) EnsureDirectory() error {
 
 func (this *ProjectManager) DeleteDirectory() error {
     if this.GlobalConfig.Debug() {
-        pmroot.Infof("Input Project Path: %s", this.ProjectConfig.ProjectPath())
+        pmroot.Infof("Input Project Path: %s", this.GlobalConfig.ProjectConfig.ProjectPath())
     }
 
     if err := this.path2abs(); err != nil {

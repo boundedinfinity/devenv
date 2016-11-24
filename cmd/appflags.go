@@ -1,10 +1,9 @@
 package cmd
 
 import (
-    flag "github.com/spf13/pflag"
     "github.com/boundedinfinity/devenv/config"
+    flag "github.com/spf13/pflag"
     "github.com/spf13/viper"
-    "log"
 )
 
 // Flag initialization
@@ -15,7 +14,7 @@ var debug = false
 func init() {
     if appFlags == nil {
         if debug {
-            log.Printf("=======================> init flags")
+            logger.Printf("=======================> init flags")
         }
 
         appFlags = flag.NewFlagSet("application-flags", flag.PanicOnError)
@@ -40,7 +39,6 @@ func initProjectFlags() {
 func initFileFlags() {
     appFlags.StringP(config.Flag_ProjectPath, "p", config.Flag_Default_ProjectPath, "Project path")
     appFlags.BoolP(config.Flag_Overwrite, "o", config.Flag_Default_Overwrite, "Overwrite file if it exists")
-    //appFlags.Uint32P(config.Flag_FileMode, "m", config.Flag_Default_Flag_FileMode, "File mode")
     appFlags.StringP(config.Flag_FileMode, "m", config.Flag_Default_Flag_FileMode, "File mode")
 }
 

@@ -1,7 +1,6 @@
-package makefile
+package project
 
 import (
-    "github.com/boundedinfinity/devenv/project"
     "github.com/boundedinfinity/devenv/config"
 )
 
@@ -9,17 +8,17 @@ func NewMakefileManager() *MakefileManager {
     projectConfig := config.ProjectConfig{}
 
     return &MakefileManager{
-        Pfm: project.NewProjectFileManagerWithData("project/makefile/Makefile", templateData{
+        Pfm: NewProjectFileManagerWithData("project/makefile/Makefile", makefileTemplateData{
             ProjectName: projectConfig.ProjectName(),
         }),
     }
 }
 
 type MakefileManager struct {
-    Pfm *project.ProjectFileManager
+    Pfm *ProjectFileManager
 }
 
-type templateData struct {
+type makefileTemplateData struct {
     ProjectName string
 }
 

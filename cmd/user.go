@@ -1,9 +1,8 @@
 package cmd
 
 import (
-    "github.com/spf13/cobra"
-    "log"
     "github.com/boundedinfinity/devenv/user"
+    "github.com/spf13/cobra"
 )
 
 func init() {
@@ -11,6 +10,9 @@ func init() {
 
     userCommand.AddCommand(userConfigDirCommand)
     assignDirFlags(userConfigDirCommand.Flags())
+
+    userCommand.AddCommand(userGoCommand)
+    assignGoFlags(userGoCommand.Flags())
 }
 
 var userCommand = &cobra.Command{
@@ -28,9 +30,19 @@ var userConfigDirCommand = &cobra.Command{
     Run:   func(cmd *cobra.Command, args []string) {
         manager := user.NewUserConfigManager()
         if err := manager.EnsureConfigDir(); err != nil {
-            log.Printf("error: %s", err.Error())
+            logger.Printf("error: %s", err.Error())
         }
     },
 }
 
-
+var userGoCommand = &cobra.Command{
+    Use:   "go",
+    Short: "Configure go environment",
+    Long:  `Configure go environment`,
+    Run:   func(cmd *cobra.Command, args []string) {
+        manager := user.NewUserConfigManager()
+        if err := manager.EnsureConfigDir(); err != nil {
+            logger.Printf("error: %s", err.Error())
+        }
+    },
+}

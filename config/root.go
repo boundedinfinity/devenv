@@ -24,7 +24,21 @@ func init() {
     viper.SetDefault(Flag_Quiet, Flag_Default_Quiet)
 }
 
-type GlobalConfig struct{}
+func NewGlobalConfig() GlobalConfig {
+    return GlobalConfig{
+        DirConfig:  DirConfig{},
+        FileConfig: FileConfig{},
+        ProjectConfig: ProjectConfig{},
+        GoConfig: GoConfig{},
+    }
+}
+
+type GlobalConfig struct {
+    DirConfig     DirConfig
+    FileConfig    FileConfig
+    ProjectConfig ProjectConfig
+    GoConfig      GoConfig
+}
 
 func (this GlobalConfig) Debug() bool {
     return viper.GetBool(Flag_Debug)

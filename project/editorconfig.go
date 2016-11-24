@@ -1,17 +1,13 @@
-package editorconfig
-
-import (
-    "github.com/boundedinfinity/devenv/project"
-)
+package project
 
 func NewEditorConfigManager() *EditorConfigManager {
     return &EditorConfigManager{
-        Pfm: project.NewProjectFileManager("project/editorconfig/.editorconfig"),
+        Pfm: NewProjectFileManager("project/editorconfig/.editorconfig"),
     }
 }
 
 type EditorConfigManager struct {
-    Pfm *project.ProjectFileManager
+    Pfm *ProjectFileManager
 }
 
 func (this *EditorConfigManager) Ensure() error {

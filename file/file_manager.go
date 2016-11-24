@@ -14,15 +14,13 @@ var logger = logging.ComponentLogger("FileManager")
 
 func NewFileManager(path string) *FileManager {
     return &FileManager{
-        GlobalConfig: config.GlobalConfig{},
-        FileConfig: config.FileConfig{},
+        GlobalConfig: config.NewGlobalConfig(),
         Path: path,
     }
 }
 
 type FileManager struct {
     GlobalConfig config.GlobalConfig
-    FileConfig   config.FileConfig
     Path         string
     absFilePath  string
     absDirPath   string
@@ -58,7 +56,7 @@ func (this *FileManager) Validate() error {
             logger.Infof("%s doesn't exists", this.absFilePath)
         }
     } else {
-        if !this.FileConfig.Overwrite() {
+        if !this.GlobalConfig.FileConfig.Overwrite() {
             return errors.New(fmt.Sprintf("%s already exists", this.absFilePath))
         }
     }
@@ -76,16 +74,16 @@ func (this *FileManager) Write(data []byte) error {
     }
 
     if !dirExists {
-        if err := os.MkdirAll(this.absDirPath, this.FileConfig.FileMode()); err != nil {
+        if err := os.MkdirAll(this.absDirPath, this.GlobalConfig.FileConfig.FileMode()); err != nil {
             return err
         }
     }
 
     if !this.GlobalConfig.Quiet() {
-        logger.Infof("Writing %s [mode: %s]", this.absFilePath, this.FileConfig.FileMode())
+        logger.Infof("Writing %s [mode: %s]", this.absFilePath, this.GlobalConfig.FileConfig.FileMode())
     }
 
-    if err := afero.WriteFile(fs, this.absFilePath, data, this.FileConfig.FileMode()); err != nil {
+    if err := afero.WriteFile(fs, this.absFilePath, data, this.GlobalConfig.FileConfig.FileMode()); err != nil {
         return err
     }
 

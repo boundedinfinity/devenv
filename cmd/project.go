@@ -1,11 +1,8 @@
 package cmd
 
 import (
+    "github.com/boundedinfinity/devenv/project"
     "github.com/spf13/cobra"
-    "github.com/boundedinfinity/devenv/file/makefile"
-    "log"
-    "github.com/boundedinfinity/devenv/file/editorconfig"
-    "github.com/boundedinfinity/devenv/file/glide"
 )
 
 func init() {
@@ -36,9 +33,9 @@ var projectMakefileCommand = &cobra.Command{
     Short: "Create a Makefile",
     Long:  `Create a Makefile`,
     Run:   func(cmd *cobra.Command, args []string) {
-        manager := makefile.NewMakefileManager()
+        manager := project.NewMakefileManager()
         if err := manager.Ensure(); err != nil {
-            log.Printf("error: %s", err.Error())
+            logger.Printf("error: %s", err.Error())
         }
     },
 }
@@ -48,9 +45,9 @@ var projectEditorconfigCommand = &cobra.Command{
     Short: "Create an .editorconfig file",
     Long:  `Create an .editorconfig file`,
     Run:   func(cmd *cobra.Command, args []string) {
-        manager := editorconfig.NewEditorConfigManager()
+        manager := project.NewEditorConfigManager()
         if err := manager.Ensure(); err != nil {
-            log.Printf("error: %s", err.Error())
+            logger.Printf("error: %s", err.Error())
         }
     },
 }
@@ -60,9 +57,9 @@ var projectGlideCommand = &cobra.Command{
     Short: "Create a glide.yml file",
     Long:  `Create a glide.yml file`,
     Run:   func(cmd *cobra.Command, args []string) {
-        manager := glide.NewGlideManager()
+        manager := project.NewGlideManager()
         if err := manager.Ensure(); err != nil {
-            log.Printf("error: %s", err.Error())
+            logger.Printf("error: %s", err.Error())
         }
     },
 }

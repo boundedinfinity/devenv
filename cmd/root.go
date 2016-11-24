@@ -1,10 +1,10 @@
 package cmd
 
 import (
-    "github.com/spf13/cobra"
-    "os"
-    "github.com/spf13/viper"
     "github.com/boundedinfinity/devenv/logging"
+    "github.com/spf13/cobra"
+    "github.com/spf13/viper"
+    "os"
 )
 
 var cfgFile string
