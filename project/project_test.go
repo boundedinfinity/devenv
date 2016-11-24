@@ -7,7 +7,7 @@ import (
 )
 
 var testDebug = false
-var testDir = "./test-project"
+var testDir = "./test-output"
 
 func TestMakefile(t *testing.T) {
     viper.Set(config.Flag_Debug, testDebug)

@@ -2,14 +2,14 @@ package user
 
 import (
     "github.com/boundedinfinity/devenv/config"
-    "github.com/spf13/afero"
-    "strings"
     "github.com/boundedinfinity/devenv/shell"
-    "fmt"
     "github.com/boundedinfinity/devenv/data"
-    "path/filepath"
     "github.com/boundedinfinity/devenv/file"
     "github.com/boundedinfinity/devenv/logging"
+    "github.com/spf13/afero"
+    "strings"
+    "path/filepath"
+    "fmt"
 )
 
 var logger = logging.ComponentLogger("UserConfigManager")
@@ -17,7 +17,10 @@ var logger = logging.ComponentLogger("UserConfigManager")
 func NewUserConfigManager() *UserConfigManager {
     return &UserConfigManager{
         GlobalConfig: config.NewGlobalConfig(),
-        data: newDataDescriptor(),
+        data: &dataDescriptor{
+            dirs: make(map[string]string),
+            files: make(map[string]string),
+        },
     }
 }
 
@@ -25,13 +28,6 @@ type UserConfigManager struct {
     GlobalConfig config.GlobalConfig
     realDir      string
     data         *dataDescriptor
-}
-
-func newDataDescriptor() *dataDescriptor {
-    return &dataDescriptor{
-        dirs: make(map[string]string),
-        files: make(map[string]string),
-    }
 }
 
 type dataDescriptor struct {
