@@ -1,9 +1,9 @@
 package user
 
 import (
+    "testing"
     "github.com/spf13/viper"
     "github.com/boundedinfinity/devenv/config"
-    "testing"
 )
 
 var testDebug = false

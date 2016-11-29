@@ -2,18 +2,22 @@ package project
 
 import (
     "github.com/boundedinfinity/devenv/config"
+    "github.com/Sirupsen/logrus"
 )
 
 func NewGlideManager() *GlideManager {
     return &GlideManager{
-        Pfm: NewProjectFileManagerWithData("project/glide/glide.yaml", glideTemplateData{
+        Path: "project/glide/glide.yaml",
+        Data: glideTemplateData{
             PackageName: config.NewGlobalConfig().GoConfig.GoPackageName(),
-        }),
+        },
     }
 }
 
 type GlideManager struct {
-    Pfm      *ProjectFileManager
+    logger *logrus.Entry
+    Path   string
+    Data   glideTemplateData
 }
 
 type glideTemplateData struct {
@@ -21,7 +25,9 @@ type glideTemplateData struct {
 }
 
 func (this *GlideManager) Ensure() error {
-    if err := this.Pfm.Ensure(); err != nil {
+    manager := NewProjectDirectoryManager(this.logger)
+
+    if err := manager.EnsureFile(this.Path, this.Data); err != nil {
         return err
     }
 

@@ -1,8 +1,8 @@
 package config
 
 import (
-    "github.com/spf13/viper"
     "os"
+    "github.com/spf13/viper"
     "github.com/boundedinfinity/devenv/util"
 )
 

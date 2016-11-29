@@ -1,17 +1,25 @@
 package project
 
+import (
+    "github.com/Sirupsen/logrus"
+)
+
 func NewEditorConfigManager() *EditorConfigManager {
     return &EditorConfigManager{
-        Pfm: NewProjectFileManager("project/editorconfig/.editorconfig"),
+        Path: "project/editorconfig/.editorconfig",
     }
 }
 
 type EditorConfigManager struct {
-    Pfm *ProjectFileManager
+    logger *logrus.Entry
+    Path   string
+    Data   glideTemplateData
 }
 
 func (this *EditorConfigManager) Ensure() error {
-    if err := this.Pfm.Ensure(); err != nil {
+    manager := NewProjectDirectoryManager(this.logger)
+
+    if err := manager.EnsureFile(this.Path, this.Data); err != nil {
         return err
     }
 

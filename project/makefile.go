@@ -2,20 +2,24 @@ package project
 
 import (
     "github.com/boundedinfinity/devenv/config"
+    "github.com/boundedinfinity/devenv/logging"
+    "github.com/Sirupsen/logrus"
 )
 
 func NewMakefileManager() *MakefileManager {
-    projectConfig := config.ProjectConfig{}
-
     return &MakefileManager{
-        Pfm: NewProjectFileManagerWithData("project/makefile/Makefile", makefileTemplateData{
-            ProjectName: projectConfig.ProjectName(),
-        }),
+        logger : logging.ComponentLogger("MakeFileManager"),
+        Path: "project/makefile/Makefile",
+        Data: makefileTemplateData{
+            ProjectName: config.NewGlobalConfig().ProjectConfig.ProjectName(),
+        },
     }
 }
 
 type MakefileManager struct {
-    Pfm *ProjectFileManager
+    logger *logrus.Entry
+    Path   string
+    Data   makefileTemplateData
 }
 
 type makefileTemplateData struct {
@@ -23,7 +27,9 @@ type makefileTemplateData struct {
 }
 
 func (this *MakefileManager) Ensure() error {
-    if err := this.Pfm.Ensure(); err != nil {
+    manager := NewProjectDirectoryManager(this.logger)
+
+    if err := manager.EnsureFile(this.Path, this.Data); err != nil {
         return err
     }
 

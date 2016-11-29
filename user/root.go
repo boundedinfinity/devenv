@@ -1,15 +1,15 @@
 package user
 
 import (
-    "github.com/boundedinfinity/devenv/config"
-    "github.com/boundedinfinity/devenv/shell"
-    "github.com/boundedinfinity/devenv/data"
-    "github.com/boundedinfinity/devenv/file"
-    "github.com/boundedinfinity/devenv/logging"
-    "github.com/spf13/afero"
     "strings"
     "path/filepath"
     "fmt"
+    "github.com/spf13/afero"
+    "github.com/boundedinfinity/devenv/logging"
+    "github.com/boundedinfinity/devenv/config"
+    "github.com/boundedinfinity/devenv/shell"
+    "github.com/boundedinfinity/devenv/file"
+    "github.com/boundedinfinity/devenv/data"
 )
 
 var logger = logging.ComponentLogger("UserConfigManager")
@@ -36,8 +36,37 @@ type dataDescriptor struct {
 }
 
 func (this *UserConfigManager) EnsureConfigDir() error {
-    if err := this.ensureConfigDir(); err != nil {
+    if strings.Contains(this.GlobalConfig.UserConfigDir(), "$") {
+        output, err := shell.Evaluate(fmt.Sprintf("echo -n %s", this.GlobalConfig.UserConfigDir()))
+
+        if err != nil {
+            return err
+        }
+
+        this.realDir = output
+    } else {
+        this.realDir = this.GlobalConfig.UserConfigDir()
+    }
+
+    if !this.GlobalConfig.Quiet() {
+        logger.Printf("Input Configuration Directory: %s", this.GlobalConfig.UserConfigDir())
+        logger.Printf("Evaluated Configuration Directory: %s", this.realDir)
+    }
+
+    fs := afero.NewOsFs()
+
+    exists, err := afero.DirExists(fs, this.realDir)
+
+    if err != nil {
         return err
+    }
+
+    if !exists {
+        logger.Printf("Creating: %s", this.realDir)
+
+        if err := fs.MkdirAll(this.realDir, this.GlobalConfig.DirConfig.FileMode()); err != nil {
+            return err
+        }
     }
 
     if err := this.ensureScriptDDirectories(); err != nil {
@@ -135,43 +164,6 @@ func (this *UserConfigManager) getList(path string) error {
         subPath := filepath.Join(path, name)
 
         if err := this.getList(subPath); err != nil {
-            return err
-        }
-    }
-
-    return nil
-}
-
-func (this *UserConfigManager) ensureConfigDir() error {
-    if strings.Contains(this.GlobalConfig.UserConfigDir(), "$") {
-        output, err := shell.Evaluate(fmt.Sprintf("echo -n %s", this.GlobalConfig.UserConfigDir()))
-
-        if err != nil {
-            return err
-        }
-
-        this.realDir = output
-    } else {
-        this.realDir = this.GlobalConfig.UserConfigDir()
-    }
-
-    if !this.GlobalConfig.Quiet() {
-        logger.Printf("Input Configuration Directory: %s", this.GlobalConfig.UserConfigDir())
-        logger.Printf("Evaluated Configuration Directory: %s", this.realDir)
-    }
-
-    fs := afero.NewOsFs()
-
-    exists, err := afero.DirExists(fs, this.realDir)
-
-    if err != nil {
-        return err
-    }
-
-    if !exists {
-        logger.Printf("Creating: %s", this.realDir)
-
-        if err := fs.MkdirAll(this.realDir, this.GlobalConfig.DirConfig.FileMode()); err != nil {
             return err
         }
     }
