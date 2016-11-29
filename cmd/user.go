@@ -28,8 +28,9 @@ var userConfigDirCommand = &cobra.Command{
     Short: "User configuration directory management",
     Long:  `User configuration directory management`,
     Run:   func(cmd *cobra.Command, args []string) {
-        manager := user.NewUserConfigManager()
-        if err := manager.EnsureConfigDir(); err != nil {
+        manager := user.NewUserDirectoryManager()
+
+        if err := manager.Ensure(); err != nil {
             logger.Printf("error: %s", err.Error())
         }
     },
@@ -40,8 +41,9 @@ var userGoCommand = &cobra.Command{
     Short: "Configure go environment",
     Long:  `Configure go environment`,
     Run:   func(cmd *cobra.Command, args []string) {
-        manager := user.NewUserConfigManager()
-        if err := manager.EnsureConfigDir(); err != nil {
+        manager := user.NewGoEnvManager()
+
+        if err := manager.Ensure(); err != nil {
             logger.Printf("error: %s", err.Error())
         }
     },

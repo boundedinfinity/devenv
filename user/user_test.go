@@ -9,13 +9,13 @@ import (
 var testDebug = false
 var testDir = "./test-output"
 
-func TestConfig(t *testing.T) {
+func TestGoEnv(t *testing.T) {
     viper.Set(config.Flag_Debug, testDebug)
     viper.Set(config.Flag_UserConfigDir, testDir)
 
-    manager := NewUserConfigManager()
+    manager := NewGoEnvManager()
 
-    if err := manager.EnsureConfigDir(); err != nil {
+    if err := manager.Ensure(); err != nil {
         t.Errorf("ensure: %s", err.Error())
     }
 }

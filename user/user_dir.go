@@ -1,4 +1,4 @@
-package project
+package user
 
 import (
     "github.com/boundedinfinity/devenv/config"
@@ -7,14 +7,18 @@ import (
     "github.com/Sirupsen/logrus"
 )
 
-func NewProjectDirectoryManager(logger *logrus.Entry) *ProjectDirectoryManager {
+func NewUserDirectoryManager() *UserDirectoryManager {
+    return NewUserDirectoryManagerWithLogger(logging.ComponentLogger("UserDirectoryManager"))
+}
+
+func NewUserDirectoryManagerWithLogger(logger *logrus.Entry) *UserDirectoryManager {
     globalConfig := config.NewGlobalConfig()
 
-    return &ProjectDirectoryManager{
-        logger: logging.SubComponentLogger(logger, "ProjectDirectoryManager"),
+    return &UserDirectoryManager{
+        logger: logger,
         GlobalConfig: globalConfig,
         Descriptor: file.DirectoryDescriptor{
-            FsPath: globalConfig.ProjectConfig.ProjectPath(),
+            FsPath: globalConfig.UserConfigDir(),
             FileMode: globalConfig.DirConfig.FileMode(),
             ExistMode: file.IgnoreIfExists,
             ExpandPath: true,
@@ -22,13 +26,13 @@ func NewProjectDirectoryManager(logger *logrus.Entry) *ProjectDirectoryManager {
     }
 }
 
-type ProjectDirectoryManager struct {
+type UserDirectoryManager struct {
     logger       *logrus.Entry
     GlobalConfig config.GlobalConfig
     Descriptor   file.DirectoryDescriptor
 }
 
-func (this *ProjectDirectoryManager) Ensure() error {
+func (this *UserDirectoryManager) Ensure() error {
     manager := file.NewDirectoryManager(this.logger, this.Descriptor)
 
     if err := manager.CreateDir(); err != nil {
@@ -38,7 +42,7 @@ func (this *ProjectDirectoryManager) Ensure() error {
     return nil
 }
 
-func (this *ProjectDirectoryManager) Delete() error {
+func (this *UserDirectoryManager) Delete() error {
     manager := file.NewDirectoryManager(this.logger, this.Descriptor)
 
     if err := manager.DeleteDir(this.Descriptor); err != nil {
@@ -48,7 +52,7 @@ func (this *ProjectDirectoryManager) Delete() error {
     return nil
 }
 
-func (this *ProjectDirectoryManager) EnsureFile(path string, data interface{}) error {
+func (this *UserDirectoryManager) EnsureFile(path string, data interface{}) error {
     if err := this.Ensure(); err != nil {
         return err
     }

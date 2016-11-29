@@ -7,8 +7,12 @@ import (
 )
 
 func NewMakefileManager() *MakefileManager {
+    return NewMakefileManagerWithLogger(logging.ComponentLogger("MakeFileManager"))
+}
+
+func NewMakefileManagerWithLogger(logger *logrus.Entry) *MakefileManager {
     return &MakefileManager{
-        logger : logging.ComponentLogger("MakeFileManager"),
+        logger : logger,
         Path: "project/makefile/Makefile",
         Data: makefileTemplateData{
             ProjectName: config.NewGlobalConfig().ProjectConfig.ProjectName(),

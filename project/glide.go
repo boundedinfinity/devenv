@@ -2,15 +2,21 @@ package project
 
 import (
     "github.com/boundedinfinity/devenv/config"
+    "github.com/boundedinfinity/devenv/logging"
     "github.com/Sirupsen/logrus"
 )
 
 func NewGlideManager() *GlideManager {
+    return NewGlideManagerWithLogger(logging.ComponentLogger("GlideManager"))
+}
+
+func NewGlideManagerWithLogger(logger *logrus.Entry) *GlideManager {
     return &GlideManager{
         Path: "project/glide/glide.yaml",
         Data: glideTemplateData{
             PackageName: config.NewGlobalConfig().GoConfig.GoPackageName(),
         },
+        logger : logger,
     }
 }
 
