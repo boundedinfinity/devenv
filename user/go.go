@@ -22,20 +22,19 @@ type GoEnvManager struct {
 }
 
 type goTemplateData struct {
-    GoPath string
+    GoPath      string
     PackageName string
 }
 
 func (this *GoEnvManager) Ensure() error {
-    manager := NewUserDirectoryManagerWithLogger(this.logger)
+    //manager := NewUserDirectoryManagerWithLogger(this.logger)
 
-    if err := manager.EnsureFile("user/config/bash/load-env.bash", this.Data); err != nil {
-        return err
-    }
 
-    if err := manager.EnsureFile("user/config/fish/load-env.fish", this.Data); err != nil {
-        return err
-    }
+    return nil
+}
+
+func (this *GoEnvManager) Enable() error {
+    //manager := NewUserDirectoryManagerWithLogger(this.logger)
 
     return nil
 }

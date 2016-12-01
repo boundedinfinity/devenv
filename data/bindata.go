@@ -4,15 +4,14 @@
 // project/editorconfig/.editorconfig
 // project/glide/glide.yaml
 // project/makefile/Makefile
-// user/config/bash/load-env.bash
-// user/config/bash/scripts.d/.gitkeep
-// user/config/devenv/available/bash/scripts.d/anyenv.bash
-// user/config/devenv/available/bash/scripts.d/go.bash
-// user/config/devenv/available/fish/scripts.d/anyenv.fish
-// user/config/devenv/available/fish/scripts.d/go.fish
-// user/config/devenv/enabled/.gitkeep
-// user/config/fish/load-env.fish
-// user/config/fish/scripts.d/.gitkeep
+// user/devenv/bash/available/anyenv.bash
+// user/devenv/bash/available/go.bash
+// user/devenv/bash/enabled/.gitkeep
+// user/devenv/bash/load.bash
+// user/devenv/fish/available/anyenv.fish
+// user/devenv/fish/available/go.fish
+// user/devenv/fish/enabled/.gitkeep
+// user/devenv/fish/load.fish
 // DO NOT EDIT!
 
 package data
@@ -95,7 +94,7 @@ func bindataGo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "bindata.go", size: 0, mode: os.FileMode(420), modTime: time.Unix(1480404288, 0)}
+	info := bindataFileInfo{name: "bindata.go", size: 0, mode: os.FileMode(420), modTime: time.Unix(1480574244, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -160,182 +159,162 @@ func projectMakefileMakefile() (*asset, error) {
 	return a, nil
 }
 
-var _userConfigBashLoadEnvBash = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\x4a\x2c\xce\xe0\xe2\x4a\xcb\x2f\x52\x28\x4e\x2e\xca\x2c\x28\x51\xc8\xcc\x53\x50\x71\xf6\xf7\x73\xf3\x74\x8f\x0f\xf2\xf7\x0f\xd1\x07\x29\xd0\x87\xc8\x15\xeb\xa5\xe8\x6b\xe9\x81\x04\xac\x15\x52\xf2\xb9\x14\x14\x14\x14\x8a\xf3\x4b\x8b\x92\x53\x15\x54\x20\x0a\xb8\x52\xf2\xf3\x52\xb9\x00\x01\x00\x00\xff\xff\xd7\x56\x2e\x93\x62\x00\x00\x00")
+var _userDevenvBashAvailableAnyenvBash = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\x4a\x2c\xce\xe0\xe2\x4a\xad\x28\xc8\x2f\x2a\x51\x70\xf4\x8b\x74\xf5\x0b\x8b\x0f\xf2\xf7\x0f\xb1\x55\x71\x71\x0d\x83\x71\xf4\x13\xf3\x2a\x53\xf3\xca\x60\xca\x02\x1c\x43\x3c\x6c\x95\x54\x90\x54\x83\x8c\xb3\x52\x01\x89\x2b\x71\x71\xa5\x96\x25\xe6\x28\x28\xa9\x68\x40\x34\x29\x64\xe6\x65\x96\x28\xe8\x6a\x2a\x71\x01\x02\x00\x00\xff\xff\xee\xf1\xce\x37\x7a\x00\x00\x00")
 
-func userConfigBashLoadEnvBashBytes() ([]byte, error) {
+func userDevenvBashAvailableAnyenvBashBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigBashLoadEnvBash,
-		"user/config/bash/load-env.bash",
+		_userDevenvBashAvailableAnyenvBash,
+		"user/devenv/bash/available/anyenv.bash",
 	)
 }
 
-func userConfigBashLoadEnvBash() (*asset, error) {
-	bytes, err := userConfigBashLoadEnvBashBytes()
+func userDevenvBashAvailableAnyenvBash() (*asset, error) {
+	bytes, err := userDevenvBashAvailableAnyenvBashBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/bash/load-env.bash", size: 98, mode: os.FileMode(420), modTime: time.Unix(1479702201, 0)}
+	info := bindataFileInfo{name: "user/devenv/bash/available/anyenv.bash", size: 122, mode: os.FileMode(420), modTime: time.Unix(1480571723, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigBashScriptsDGitkeep = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
+var _userDevenvBashAvailableGoBash = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\x4a\x2c\xce\xe0\xe2\x4a\xad\x28\xc8\x2f\x2a\x51\x70\xf7\x0f\x70\x0c\xf1\xb0\x55\xf1\xf0\xf7\x75\xd5\x4f\x49\x2d\xd3\x2f\x28\xca\xcf\x4a\x4d\x2e\x29\xd6\x4f\xcf\x87\xa9\x81\xa8\x00\x91\x56\x2a\x10\xf5\x20\xb3\xb8\x00\x01\x00\x00\xff\xff\xc3\x61\xc9\x35\x57\x00\x00\x00")
 
-func userConfigBashScriptsDGitkeepBytes() ([]byte, error) {
+func userDevenvBashAvailableGoBashBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigBashScriptsDGitkeep,
-		"user/config/bash/scripts.d/.gitkeep",
+		_userDevenvBashAvailableGoBash,
+		"user/devenv/bash/available/go.bash",
 	)
 }
 
-func userConfigBashScriptsDGitkeep() (*asset, error) {
-	bytes, err := userConfigBashScriptsDGitkeepBytes()
+func userDevenvBashAvailableGoBash() (*asset, error) {
+	bytes, err := userDevenvBashAvailableGoBashBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/bash/scripts.d/.gitkeep", size: 0, mode: os.FileMode(420), modTime: time.Unix(1479701462, 0)}
+	info := bindataFileInfo{name: "user/devenv/bash/available/go.bash", size: 87, mode: os.FileMode(420), modTime: time.Unix(1479970520, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigDevenvAvailableBashScriptsDAnyenvBash = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\x4a\x2c\xce\xe0\xe2\x4a\xad\x28\xc8\x2f\x2a\x51\x70\xf4\x8b\x74\xf5\x0b\x8b\x0f\xf2\xf7\x0f\xb1\x55\x71\xf6\xf7\x73\xf3\x74\x07\x73\xf4\x13\xf3\x2a\x53\xf3\xca\x60\xca\x02\x1c\x43\x3c\x6c\x95\x54\x90\x54\x83\x8c\xb3\x52\x01\x89\x2b\x71\x71\xa5\x96\x25\xe6\x28\x28\xa9\x68\x40\x34\x29\x64\xe6\x65\x96\x28\xe8\x6a\x2a\x71\x01\x02\x00\x00\xff\xff\x91\xbb\xbf\x90\x7a\x00\x00\x00")
+var _userDevenvBashEnabledGitkeep = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
 
-func userConfigDevenvAvailableBashScriptsDAnyenvBashBytes() ([]byte, error) {
+func userDevenvBashEnabledGitkeepBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigDevenvAvailableBashScriptsDAnyenvBash,
-		"user/config/devenv/available/bash/scripts.d/anyenv.bash",
+		_userDevenvBashEnabledGitkeep,
+		"user/devenv/bash/enabled/.gitkeep",
 	)
 }
 
-func userConfigDevenvAvailableBashScriptsDAnyenvBash() (*asset, error) {
-	bytes, err := userConfigDevenvAvailableBashScriptsDAnyenvBashBytes()
+func userDevenvBashEnabledGitkeep() (*asset, error) {
+	bytes, err := userDevenvBashEnabledGitkeepBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/devenv/available/bash/scripts.d/anyenv.bash", size: 122, mode: os.FileMode(420), modTime: time.Unix(1479701722, 0)}
+	info := bindataFileInfo{name: "user/devenv/bash/enabled/.gitkeep", size: 0, mode: os.FileMode(420), modTime: time.Unix(1480573862, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigDevenvAvailableBashScriptsDGoBash = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\x4a\x2c\xce\xe0\xe2\x4a\xad\x28\xc8\x2f\x2a\x51\x70\xf7\x0f\x70\x0c\xf1\xb0\x55\xf1\xf0\xf7\x75\xd5\x4f\x49\x2d\xd3\x2f\x28\xca\xcf\x4a\x4d\x2e\x29\xd6\x4f\xcf\x87\xa9\x81\xa8\x00\x91\x56\x2a\x10\xf5\x20\xb3\xb8\x00\x01\x00\x00\xff\xff\xc3\x61\xc9\x35\x57\x00\x00\x00")
+var _userDevenvBashLoadBash = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x4c\x8c\xb1\x0a\x83\x40\x10\x05\xfb\xfd\x8a\x17\x62\x95\xc2\xfd\x80\x90\x4e\xdb\x08\x12\x6c\x83\xe7\x6d\xc8\x41\xd8\x95\xbb\xf3\x08\x88\xff\x1e\x24\x8d\xe5\xc0\xcc\x9c\x4f\xbc\xa4\xc8\x2e\x28\x8b\x16\xb8\x31\xbd\x89\xe4\x3b\x5b\xcc\x68\xda\xa1\xbd\x0f\xcf\xbe\xeb\x1e\xb7\x75\x45\xdd\x48\x11\x2d\xbd\x59\xc6\xb6\x11\xbd\x2c\x22\x4d\x31\xcc\x19\x41\x51\x1d\x6c\xde\x37\x2c\x3a\xba\x8f\x78\xbe\xd4\x3b\x5e\xe1\x8d\x00\x20\xd9\x12\x27\x41\xf5\x4f\xc9\x9b\x0a\xfd\x02\x00\x00\xff\xff\xdf\x14\xf6\x9a\x86\x00\x00\x00")
 
-func userConfigDevenvAvailableBashScriptsDGoBashBytes() ([]byte, error) {
+func userDevenvBashLoadBashBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigDevenvAvailableBashScriptsDGoBash,
-		"user/config/devenv/available/bash/scripts.d/go.bash",
+		_userDevenvBashLoadBash,
+		"user/devenv/bash/load.bash",
 	)
 }
 
-func userConfigDevenvAvailableBashScriptsDGoBash() (*asset, error) {
-	bytes, err := userConfigDevenvAvailableBashScriptsDGoBashBytes()
+func userDevenvBashLoadBash() (*asset, error) {
+	bytes, err := userDevenvBashLoadBashBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/devenv/available/bash/scripts.d/go.bash", size: 87, mode: os.FileMode(420), modTime: time.Unix(1479970520, 0)}
+	info := bindataFileInfo{name: "user/devenv/bash/load.bash", size: 134, mode: os.FileMode(420), modTime: time.Unix(1480574031, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigDevenvAvailableFishScriptsDAnyenvFish = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\xcb\x2c\xce\xe0\xe2\x2a\x4e\x2d\x51\xd0\x4d\xaf\x50\x70\xf4\x8b\x74\xf5\x0b\x8b\x0f\xf2\xf7\x0f\x51\x50\x71\xf6\xf7\x73\xf3\x74\x07\x73\xf4\x13\xf3\x2a\x53\xf3\xca\xe0\xea\x02\x1c\x43\x3c\x14\x54\x90\x54\x83\xcc\x53\x50\x01\x09\x73\x71\xa5\x96\x25\xe6\x28\x28\x69\x40\xb4\x28\x64\xe6\x65\x96\x28\xe8\x6a\x2a\x71\x01\x02\x00\x00\xff\xff\x7f\x42\xdf\x3b\x79\x00\x00\x00")
+var _userDevenvFishAvailableAnyenvFish = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\xcb\x2c\xce\xe0\xe2\x2a\x4e\x2d\x51\xd0\x4d\xaf\x50\x70\xf4\x8b\x74\xf5\x0b\x8b\x0f\xf2\xf7\x0f\x51\x50\x71\x71\x0d\x83\x71\xf4\x13\xf3\x2a\x53\xf3\xca\xe0\xea\x02\x1c\x43\x3c\x14\x54\x90\x54\x83\xcc\x53\x50\x01\x09\x73\x71\xa5\x96\x25\xe6\x28\x28\x69\x40\xb4\x28\x64\xe6\x65\x96\x28\xe8\x6a\x2a\x71\x01\x02\x00\x00\xff\xff\xa0\xe3\x0e\x3b\x79\x00\x00\x00")
 
-func userConfigDevenvAvailableFishScriptsDAnyenvFishBytes() ([]byte, error) {
+func userDevenvFishAvailableAnyenvFishBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigDevenvAvailableFishScriptsDAnyenvFish,
-		"user/config/devenv/available/fish/scripts.d/anyenv.fish",
+		_userDevenvFishAvailableAnyenvFish,
+		"user/devenv/fish/available/anyenv.fish",
 	)
 }
 
-func userConfigDevenvAvailableFishScriptsDAnyenvFish() (*asset, error) {
-	bytes, err := userConfigDevenvAvailableFishScriptsDAnyenvFishBytes()
+func userDevenvFishAvailableAnyenvFish() (*asset, error) {
+	bytes, err := userDevenvFishAvailableAnyenvFishBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/devenv/available/fish/scripts.d/anyenv.fish", size: 121, mode: os.FileMode(420), modTime: time.Unix(1479701739, 0)}
+	info := bindataFileInfo{name: "user/devenv/fish/available/anyenv.fish", size: 121, mode: os.FileMode(420), modTime: time.Unix(1480571752, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigDevenvAvailableFishScriptsDGoFish = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\xcb\x2c\xce\xe0\xe2\x2a\x4e\x2d\x51\xd0\x4d\xaf\x50\x70\xf7\x0f\x70\x0c\xf1\x50\xa8\xae\x56\xd0\x73\xcf\x0f\x48\x2c\xc9\x50\xa8\xad\x85\x4b\x82\xa5\x54\x20\x24\x44\x21\xc8\x14\x2e\x40\x00\x00\x00\xff\xff\xf0\xe5\x4f\x3e\x51\x00\x00\x00")
+var _userDevenvFishAvailableGoFish = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\xcb\x2c\xce\xe0\xe2\x2a\x4e\x2d\x51\xd0\x4d\xaf\x50\x70\xf7\x0f\x70\x0c\xf1\x50\xa8\xae\x56\xd0\x73\xcf\x0f\x48\x2c\xc9\x50\xa8\xad\x85\x4b\x82\xa5\x54\x20\x24\x44\x21\xc8\x14\x2e\x40\x00\x00\x00\xff\xff\xf0\xe5\x4f\x3e\x51\x00\x00\x00")
 
-func userConfigDevenvAvailableFishScriptsDGoFishBytes() ([]byte, error) {
+func userDevenvFishAvailableGoFishBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigDevenvAvailableFishScriptsDGoFish,
-		"user/config/devenv/available/fish/scripts.d/go.fish",
+		_userDevenvFishAvailableGoFish,
+		"user/devenv/fish/available/go.fish",
 	)
 }
 
-func userConfigDevenvAvailableFishScriptsDGoFish() (*asset, error) {
-	bytes, err := userConfigDevenvAvailableFishScriptsDGoFishBytes()
+func userDevenvFishAvailableGoFish() (*asset, error) {
+	bytes, err := userDevenvFishAvailableGoFishBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/devenv/available/fish/scripts.d/go.fish", size: 81, mode: os.FileMode(420), modTime: time.Unix(1480372080, 0)}
+	info := bindataFileInfo{name: "user/devenv/fish/available/go.fish", size: 81, mode: os.FileMode(420), modTime: time.Unix(1480372080, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigDevenvEnabledGitkeep = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
+var _userDevenvFishEnabledGitkeep = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
 
-func userConfigDevenvEnabledGitkeepBytes() ([]byte, error) {
+func userDevenvFishEnabledGitkeepBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigDevenvEnabledGitkeep,
-		"user/config/devenv/enabled/.gitkeep",
+		_userDevenvFishEnabledGitkeep,
+		"user/devenv/fish/enabled/.gitkeep",
 	)
 }
 
-func userConfigDevenvEnabledGitkeep() (*asset, error) {
-	bytes, err := userConfigDevenvEnabledGitkeepBytes()
+func userDevenvFishEnabledGitkeep() (*asset, error) {
+	bytes, err := userDevenvFishEnabledGitkeepBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/devenv/enabled/.gitkeep", size: 0, mode: os.FileMode(420), modTime: time.Unix(1480372095, 0)}
+	info := bindataFileInfo{name: "user/devenv/fish/enabled/.gitkeep", size: 0, mode: os.FileMode(420), modTime: time.Unix(1480573862, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _userConfigFishLoadEnvFish = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x52\x56\xd4\x2f\x2d\x2e\xd2\x4f\xca\xcc\xd3\x4f\xcd\x2b\x53\x48\xcb\x2c\xce\xe0\xe2\x4a\xcb\x2f\x52\x28\x4e\x2e\xca\x2c\x28\x51\xc8\xcc\x53\x50\x71\xf6\xf7\x73\xf3\x74\x8f\x0f\xf2\xf7\x0f\xd1\x07\x29\xd0\x87\xc8\x15\xeb\xa5\xe8\x6b\xe9\x81\x75\x28\x28\x28\x28\x14\xe7\x97\x16\x25\xa7\x2a\xa8\x40\x24\xb9\x52\xf3\x52\xb8\xb8\x00\x01\x00\x00\xff\xff\x65\x82\x06\x6c\x5e\x00\x00\x00")
+var _userDevenvFishLoadFish = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x4c\xcc\xc1\x0a\x82\x40\x10\x87\xf1\xfb\x3c\xc5\x3f\xf2\x14\xe4\xbc\x84\x5e\x13\x24\xbc\x46\xea\x58\x0b\x31\x1b\x33\xeb\x12\xc8\xbe\x7b\x54\x97\xee\xdf\xf7\xdb\xef\x78\x75\xe3\x31\x28\x8b\x66\x2c\xc1\xef\x44\x2e\x09\xc7\xdb\x0b\x4d\x3b\xb4\xa7\xe1\xd2\x77\xdd\x19\xdb\x86\xba\x91\x2c\x9a\xfb\x18\x13\x4a\x21\x5a\xa2\xc1\x27\x0b\xcf\x84\xa0\xa8\xfe\x6a\xfe\x38\x2c\x7a\x1d\x1f\x32\xf3\xa1\xfe\xb2\x00\xe0\x71\xb5\x49\x50\xfd\x36\x12\x9d\x89\xde\x01\x00\x00\xff\xff\x78\xd9\x24\x32\x83\x00\x00\x00")
 
-func userConfigFishLoadEnvFishBytes() ([]byte, error) {
+func userDevenvFishLoadFishBytes() ([]byte, error) {
 	return bindataRead(
-		_userConfigFishLoadEnvFish,
-		"user/config/fish/load-env.fish",
+		_userDevenvFishLoadFish,
+		"user/devenv/fish/load.fish",
 	)
 }
 
-func userConfigFishLoadEnvFish() (*asset, error) {
-	bytes, err := userConfigFishLoadEnvFishBytes()
+func userDevenvFishLoadFish() (*asset, error) {
+	bytes, err := userDevenvFishLoadFishBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "user/config/fish/load-env.fish", size: 94, mode: os.FileMode(420), modTime: time.Unix(1479702141, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
-}
-
-var _userConfigFishScriptsDGitkeep = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
-
-func userConfigFishScriptsDGitkeepBytes() ([]byte, error) {
-	return bindataRead(
-		_userConfigFishScriptsDGitkeep,
-		"user/config/fish/scripts.d/.gitkeep",
-	)
-}
-
-func userConfigFishScriptsDGitkeep() (*asset, error) {
-	bytes, err := userConfigFishScriptsDGitkeepBytes()
-	if err != nil {
-		return nil, err
-	}
-
-	info := bindataFileInfo{name: "user/config/fish/scripts.d/.gitkeep", size: 0, mode: os.FileMode(420), modTime: time.Unix(1479701462, 0)}
+	info := bindataFileInfo{name: "user/devenv/fish/load.fish", size: 131, mode: os.FileMode(420), modTime: time.Unix(1480574041, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -396,15 +375,14 @@ var _bindata = map[string]func() (*asset, error){
 	"project/editorconfig/.editorconfig": projectEditorconfigEditorconfig,
 	"project/glide/glide.yaml": projectGlideGlideYaml,
 	"project/makefile/Makefile": projectMakefileMakefile,
-	"user/config/bash/load-env.bash": userConfigBashLoadEnvBash,
-	"user/config/bash/scripts.d/.gitkeep": userConfigBashScriptsDGitkeep,
-	"user/config/devenv/available/bash/scripts.d/anyenv.bash": userConfigDevenvAvailableBashScriptsDAnyenvBash,
-	"user/config/devenv/available/bash/scripts.d/go.bash": userConfigDevenvAvailableBashScriptsDGoBash,
-	"user/config/devenv/available/fish/scripts.d/anyenv.fish": userConfigDevenvAvailableFishScriptsDAnyenvFish,
-	"user/config/devenv/available/fish/scripts.d/go.fish": userConfigDevenvAvailableFishScriptsDGoFish,
-	"user/config/devenv/enabled/.gitkeep": userConfigDevenvEnabledGitkeep,
-	"user/config/fish/load-env.fish": userConfigFishLoadEnvFish,
-	"user/config/fish/scripts.d/.gitkeep": userConfigFishScriptsDGitkeep,
+	"user/devenv/bash/available/anyenv.bash": userDevenvBashAvailableAnyenvBash,
+	"user/devenv/bash/available/go.bash": userDevenvBashAvailableGoBash,
+	"user/devenv/bash/enabled/.gitkeep": userDevenvBashEnabledGitkeep,
+	"user/devenv/bash/load.bash": userDevenvBashLoadBash,
+	"user/devenv/fish/available/anyenv.fish": userDevenvFishAvailableAnyenvFish,
+	"user/devenv/fish/available/go.fish": userDevenvFishAvailableGoFish,
+	"user/devenv/fish/enabled/.gitkeep": userDevenvFishEnabledGitkeep,
+	"user/devenv/fish/load.fish": userDevenvFishLoadFish,
 }
 
 // AssetDir returns the file names below a certain
@@ -460,37 +438,26 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		}},
 	}},
 	"user": &bintree{nil, map[string]*bintree{
-		"config": &bintree{nil, map[string]*bintree{
+		"devenv": &bintree{nil, map[string]*bintree{
 			"bash": &bintree{nil, map[string]*bintree{
-				"load-env.bash": &bintree{userConfigBashLoadEnvBash, map[string]*bintree{}},
-				"scripts.d": &bintree{nil, map[string]*bintree{
-					".gitkeep": &bintree{userConfigBashScriptsDGitkeep, map[string]*bintree{}},
-				}},
-			}},
-			"devenv": &bintree{nil, map[string]*bintree{
 				"available": &bintree{nil, map[string]*bintree{
-					"bash": &bintree{nil, map[string]*bintree{
-						"scripts.d": &bintree{nil, map[string]*bintree{
-							"anyenv.bash": &bintree{userConfigDevenvAvailableBashScriptsDAnyenvBash, map[string]*bintree{}},
-							"go.bash": &bintree{userConfigDevenvAvailableBashScriptsDGoBash, map[string]*bintree{}},
-						}},
-					}},
-					"fish": &bintree{nil, map[string]*bintree{
-						"scripts.d": &bintree{nil, map[string]*bintree{
-							"anyenv.fish": &bintree{userConfigDevenvAvailableFishScriptsDAnyenvFish, map[string]*bintree{}},
-							"go.fish": &bintree{userConfigDevenvAvailableFishScriptsDGoFish, map[string]*bintree{}},
-						}},
-					}},
+					"anyenv.bash": &bintree{userDevenvBashAvailableAnyenvBash, map[string]*bintree{}},
+					"go.bash": &bintree{userDevenvBashAvailableGoBash, map[string]*bintree{}},
 				}},
 				"enabled": &bintree{nil, map[string]*bintree{
-					".gitkeep": &bintree{userConfigDevenvEnabledGitkeep, map[string]*bintree{}},
+					".gitkeep": &bintree{userDevenvBashEnabledGitkeep, map[string]*bintree{}},
 				}},
+				"load.bash": &bintree{userDevenvBashLoadBash, map[string]*bintree{}},
 			}},
 			"fish": &bintree{nil, map[string]*bintree{
-				"load-env.fish": &bintree{userConfigFishLoadEnvFish, map[string]*bintree{}},
-				"scripts.d": &bintree{nil, map[string]*bintree{
-					".gitkeep": &bintree{userConfigFishScriptsDGitkeep, map[string]*bintree{}},
+				"available": &bintree{nil, map[string]*bintree{
+					"anyenv.fish": &bintree{userDevenvFishAvailableAnyenvFish, map[string]*bintree{}},
+					"go.fish": &bintree{userDevenvFishAvailableGoFish, map[string]*bintree{}},
 				}},
+				"enabled": &bintree{nil, map[string]*bintree{
+					".gitkeep": &bintree{userDevenvFishEnabledGitkeep, map[string]*bintree{}},
+				}},
+				"load.fish": &bintree{userDevenvFishLoadFish, map[string]*bintree{}},
 			}},
 		}},
 	}},

@@ -56,7 +56,7 @@ func (this *DirectoryManager) CreateDir() error {
         }
     }
 
-    if err := fs.Mkdir(realFsPath, this.Descriptor.FileMode); err != nil {
+    if err := fs.MkdirAll(realFsPath, this.Descriptor.FileMode); err != nil {
         return err
     }
 
@@ -96,27 +96,14 @@ func (this *DirectoryManager) DeleteDir(desc DirectoryDescriptor) error {
 }
 
 func (this *DirectoryManager) EnsureFile(path string, data interface{}) error {
+    if err := this.CreateDir(); err != nil {
+        return err
+    }
+
     manager := NewFileManager(this.logger)
 
     if this.GlobalConfig.Debug() {
         this.logger.Infof("Template Path: %s", path)
-    }
-
-    fsPath, err := Template2FsPath(this.Descriptor.FsPath, path)
-
-    if err != nil {
-        return err
-    }
-
-    dirDesc := DirectoryDescriptor{
-        FsPath: filepath.Dir(fsPath),
-        FileMode: this.Descriptor.FileMode,
-        ExistMode: this.Descriptor.ExistMode,
-        ExpandPath: this.Descriptor.ExpandPath,
-    }
-
-    if err := NewDirectoryManager(this.logger, dirDesc).CreateDir(); err != nil {
-        return err
     }
 
     existMode := IgnoreIfExists
@@ -125,9 +112,8 @@ func (this *DirectoryManager) EnsureFile(path string, data interface{}) error {
         existMode = OverwriteIfExists
     }
 
-    if err != nil {
-        return err
-    }
+    filename := filepath.Base(path)
+    fsPath := filepath.Join(this.Descriptor.FsPath, filename)
 
     desc := TemplateCopyFileDescriptor{
         TemplatePath: path,
