@@ -7,6 +7,7 @@ import (
     "github.com/Sirupsen/logrus"
     "path/filepath"
     "strings"
+    "fmt"
 )
 
 func NewUserDirectory() (*UserDirectory, error) {
@@ -44,12 +45,16 @@ func (this *UserDirectory) Create() error {
 }
 
 func (this *UserDirectory) ensureBash() error {
-    if err := this.WriteTemplateFile("user/devenv/bash/load.bash", nil); err != nil {
-        return err
+    files := []string{
+        "user/devenv/bash/load.bash",
+        "user/devenv/bash/available/go.bash",
+        "user/devenv/bash/available/anyenv.bash",
     }
 
-    if err := this.WriteTemplateFile("user/devenv/bash/available/go.bash", nil); err != nil {
-        return err
+    for _, file := range files {
+        if err := this.WriteTemplateFile(file, nil); err != nil {
+            return err
+        }
     }
 
     if err := this.CreateDirectory("devenv/bash/enabled"); err != nil {
@@ -73,6 +78,45 @@ func (this *UserDirectory) WriteTemplateFile(templatePath string, templateData i
     }
 
     if err := f.Write(); err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func (this *UserDirectory) NewSymLinkFile(link string, target string) (*file.SymLinkFile, error) {
+    userLink := filepath.Join(this.directory.ExpandedPath, link)
+    userTarget := filepath.Join(this.directory.ExpandedPath, target)
+    return file.NewSymLinkFile(this.logger, userLink, userTarget)
+}
+
+func (this *UserDirectory) WriteSymLinkFile(link string, target string) error {
+    f, err := this.NewSymLinkFile(link, target)
+
+    if err != nil {
+        return err
+    }
+
+    if err := f.Create(); err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func (this *UserDirectory) Enable(thing string) error {
+    if err := this.enableShell("bash", thing); err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func (this *UserDirectory) enableShell(shell string, thing string) error {
+    enabled := fmt.Sprintf("devenv/%s/enabled/%s.bash", shell, thing)
+    available := fmt.Sprintf("devenv/%s/available/%s.bash", shell, thing)
+
+    if err := this.WriteSymLinkFile(enabled, available); err != nil {
         return err
     }
 

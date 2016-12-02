@@ -1,9 +1,9 @@
 package user
 
 import (
-    "testing"
-    "github.com/spf13/viper"
     "github.com/boundedinfinity/devenv/config"
+    "github.com/spf13/viper"
+    "testing"
 )
 
 var testDebug = false
@@ -30,7 +30,7 @@ func TestGoEnv(t *testing.T) {
 
     manager := NewGoEnvManager()
 
-    if err := manager.Ensure(); err != nil {
+    if err := manager.Enable(); err != nil {
         t.Errorf("ensure: %s", err.Error())
     }
 }
