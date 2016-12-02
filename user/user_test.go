@@ -13,9 +13,13 @@ func TestConfigDir(t *testing.T) {
     viper.Set(config.Flag_Debug, testDebug)
     viper.Set(config.Flag_UserConfigDir, testDir)
 
-    manager := NewUserDirectoryManager()
+    manager, err := NewUserDirectory()
 
-    if err := manager.Ensure(); err != nil {
+    if err != nil {
+        t.Errorf("ensure: %s", err.Error())
+    }
+
+    if err := manager.Create(); err != nil {
         t.Errorf("ensure: %s", err.Error())
     }
 }

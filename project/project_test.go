@@ -13,13 +13,13 @@ func TestMakefile(t *testing.T) {
     viper.Set(config.Flag_Debug, testDebug)
     viper.Set(config.Flag_ProjectPath, testDir)
 
-    manager := NewMakefileManager()
+    manager, err := NewMakefileTemplateFile()
 
-    //if err := manager.Pfm.Project.DeleteDirectory(); err != nil {
-    //    t.Errorf("delete: %s", err.Error())
-    //}
+    if err != nil {
+        t.Errorf("ensure: %s", err.Error())
+    }
 
-    if err := manager.Ensure(); err != nil {
+    if err := manager.Write(); err != nil {
         t.Errorf("ensure: %s", err.Error())
     }
 }
@@ -29,13 +29,13 @@ func TestGlide(t *testing.T) {
     viper.Set(config.Flag_ProjectPath, testDir)
     viper.Set(config.Flag_GoPackageName, "github.com/boundedinfinity/test")
 
-    manager := NewGlideManager()
+    manager, err := NewGlideTemplateFile()
 
-    //if err := manager.Pfm.Project.DeleteDirectory(); err != nil {
-    //    t.Errorf("delete: %s", err.Error())
-    //}
+    if err != nil {
+        t.Errorf("ensure: %s", err.Error())
+    }
 
-    if err := manager.Ensure(); err != nil {
+    if err := manager.Write(); err != nil {
         t.Errorf("ensure: %s", err.Error())
     }
 }
@@ -44,13 +44,13 @@ func TestEditorConfig(t *testing.T) {
     viper.Set(config.Flag_Debug, testDebug)
     viper.Set(config.Flag_ProjectPath, testDir)
 
-    manager := NewEditorConfigManager()
+    manager, err := NewEditorConfigTemplateFile()
 
-    //if err := manager.Pfm.Project.DeleteDirectory(); err != nil {
-    //    t.Errorf("delete: %s", err.Error())
-    //}
+    if err != nil {
+        t.Errorf("ensure: %s", err.Error())
+    }
 
-    if err := manager.Ensure(); err != nil {
+    if err := manager.Write(); err != nil {
         t.Errorf("ensure: %s", err.Error())
     }
 }
