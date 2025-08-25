@@ -1,0 +1,13 @@
+{
+    "name": "GnuPG",
+    "variables": [
+        {
+            "home-path": "$HOME/.gnupg",
+            "xdg-path": "$XDG_DATA_HOME/gnupg"
+        }
+    ],
+    "ref": {
+        "homepage": "https://www.gnupg.org",
+        "xdg-ninja": "https://github.com/b3nj5m1n/xdg-ninja/blob/main/programs/gnupg.json"
+    }
+}

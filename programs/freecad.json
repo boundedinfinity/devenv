@@ -1,0 +1,29 @@
+{
+    "name": "FreeCAD",
+    "variables": [
+        {
+            "home-path": "$HOME/.FreeCAD/Gui",
+            "xdg-path": "$XDG_DATA_HOME/FreeCAD/Gui"
+        },
+        {
+            "home-path": "$HOME/.FreeCAD/Macro",
+            "xdg-path": "$XDG_DATA_HOME/FreeCAD/Macro"
+        },
+        {
+            "home-path": "$HOME/.FreeCAD/Mod",
+            "xdg-path": "$XDG_DATA_HOME/FreeCAD/Mod"
+        },
+        {
+            "home-path": "$HOME/.FreeCAD/system.cfg",
+            "xdg-path": "$XDG_CONFIG_HOME/FreeCAD/system.cfg"
+        },
+        {
+            "home-path": "$HOME/.FreeCAD/user.cfg",
+            "xdg-path": "$XDG_CONFIG_HOME/FreeCAD/user.cfg"
+        }
+    ],
+    "ref": {
+        "homepage": "https://www.freecad.org",
+        "xdg-ninja": "https://github.com/b3nj5m1n/xdg-ninja/blob/main/programs/FreeCAD.json"
+    }
+}

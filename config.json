@@ -1,0 +1,16 @@
+{
+    "shells": [
+        {
+            "name": "fish",
+            "xdg-config-home": "$XDG_CONFIG/fish/conf.d"
+        },
+        {
+            "name": "bash",
+            "xdg-config-home": "$XDG_CONFIG/bash/conf.d"
+        },
+        {
+            "name": "zsh",
+            "xdg-config-home": "$XDG_CONFIG/zsh/conf.d"
+        }
+    ]
+}
