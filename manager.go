@@ -24,16 +24,24 @@ var (
 	}
 )
 
-func NewFileManager() *FileManager {
-	return &FileManager{
+func NewFileManager() (*FileManager, error) {
+	fm := &FileManager{
 		environment: map[string]string{},
 		data:        map[string]XdgFile{},
+		sm:          NewShellManager(),
 	}
+
+	if err := fm.init(); err != nil {
+		return nil, err
+	}
+
+	return fm, nil
 }
 
 type FileManager struct {
 	environment map[string]string
 	data        map[string]XdgFile
+	sm          *BoundedShellManager
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -63,18 +71,8 @@ func (this *FileManager) ensureVar(name string) error {
 
 func (this *FileManager) ensureDir(path string) error {
 	resolved := this.resolvePath(path)
-	info, err := os.Stat(resolved)
 
-	switch {
-	case err == nil && !info.IsDir():
-		return fmt.Errorf("%s exists but isn't a directory", resolved)
-	case os.IsNotExist(err):
-		return err
-	case err != nil:
-		return err
-	}
-
-	if err := os.Mkdir(resolved, os.FileMode(0755)); err != nil {
+	if err := dirEnsure(resolved); err != nil {
 		return err
 	}
 
@@ -100,7 +98,11 @@ func (this *FileManager) resolvePath(path string) string {
 // Load Data
 // ///////////////////////////////////////////////////////////////////////////
 
-func (this *FileManager) Init() error {
+func (this *FileManager) init() error {
+	if err := this.sm.init(); err != nil {
+		return err
+	}
+
 	varNames := []string{"HOME", "SHELL"}
 	varNames = append(varNames, _XDG_VARIABLE_NAMES...)
 

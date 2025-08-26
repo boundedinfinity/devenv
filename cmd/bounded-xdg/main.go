@@ -1,12 +1,13 @@
 package main
 
 import (
-	"context"
-	"os"
-
-	"github.com/urfave/cli/v3"
+	"github.com/boundedinfinity/bounded_xdg"
 )
 
 func main() {
-	(&cli.Command{}).Run(context.Background(), os.Args)
+	_, err := bounded_xdg.NewFileManager()
+
+	if err != nil {
+		panic(err)
+	}
 }
