@@ -13,29 +13,22 @@ var (
 		"XDG_DATA_HOME":   "$HOME/.local/share",
 		"XDG_STATE_HOME":  "$HOME/.local/state",
 		"XDG_CACHE_HOME":  "$HOME/.cache",
+		"BOUNDED_CONFIG":  "$XDG_CONFIG_HOME/bounded-xdg",
+	}
+
+	_XDG_VARIABLE_NAMES = []string{
+		"XDG_CONFIG_HOME",
+		"XDG_DATA_HOME",
+		"XDG_STATE_HOME",
+		"XDG_CACHE_HOME",
 	}
 )
 
-func NewFileManager() (*FileManager, error) {
-	fm := &FileManager{
+func NewFileManager() *FileManager {
+	return &FileManager{
 		environment: map[string]string{},
 		data:        map[string]XdgFile{},
 	}
-
-	if err := fm.getVarOrErr("HOME"); err != nil {
-		return nil, err
-	}
-
-	if err := fm.getVarOrErr("SHELL"); err != nil {
-		return nil, err
-	}
-
-	fm.getVarOrDefault("XDG_CONFIG_HOME")
-	fm.getVarOrDefault("XDG_DATA_HOME")
-	fm.getVarOrDefault("XDG_STATE_HOME")
-	fm.getVarOrDefault("XDG_CACHE_HOME")
-
-	return fm, nil
 }
 
 type FileManager struct {
@@ -44,51 +37,92 @@ type FileManager struct {
 }
 
 // ///////////////////////////////////////////////////////////////////////////
-// Ensure Data
+// Utilities
 // ///////////////////////////////////////////////////////////////////////////
 
-func (this *FileManager) ensureDir(path string) error {
-
-	return nil
+func (this *FileManager) getVar(name string) string {
+	path := this.environment[name]
+	path = this.resolvePath(path)
+	return path
 }
 
-// ///////////////////////////////////////////////////////////////////////////
-// Load Data
-// ///////////////////////////////////////////////////////////////////////////
-
-func (this *FileManager) getVarOrErr(name string) error {
+func (this *FileManager) ensureVar(name string) error {
 	v := os.Getenv(name)
+
+	if found, ok := _XDG_DEFAULTS[name]; v == "" && ok {
+		v = found
+	}
 
 	if v == "" {
 		return fmt.Errorf("environment variable %s not defined", name)
 	}
 
 	this.environment[name] = v
+	return nil
+}
+
+func (this *FileManager) ensureDir(path string) error {
+	resolved := this.resolvePath(path)
+	info, err := os.Stat(resolved)
+
+	switch {
+	case err == nil && !info.IsDir():
+		return fmt.Errorf("%s exists but isn't a directory", resolved)
+	case os.IsNotExist(err):
+		return err
+	case err != nil:
+		return err
+	}
+
+	if err := os.Mkdir(resolved, os.FileMode(0755)); err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func (this *FileManager) getVarOrDefault(name string) {
-	v := os.Getenv(name)
+func (this *FileManager) resolvePath(path string) string {
+	resolve := path
 
-	if v == "" {
-		v = _XDG_DEFAULTS[name]
+	for _, part := range strings.Split(path, "/") {
+		if strings.HasPrefix(part, "$") {
+			name := strings.ReplaceAll(part, "$", "")
+			if found, ok := this.environment[name]; !ok {
+				resolve = strings.ReplaceAll(path, part, found)
+			}
+		}
 	}
 
-	this.environment[name] = v
+	return resolve
 }
 
-func (this *FileManager) LoadData() error {
-	files, err := os.ReadDir("")
+// ///////////////////////////////////////////////////////////////////////////
+// Load Data
+// ///////////////////////////////////////////////////////////////////////////
 
-	if err != nil {
-		return err
-	}
+func (this *FileManager) Init() error {
+	varNames := []string{"HOME", "SHELL"}
+	varNames = append(varNames, _XDG_VARIABLE_NAMES...)
 
-	for _, file := range files {
-		if err := this.loadData(file.Name()); err != nil {
+	for _, name := range varNames {
+		if err := this.ensureVar(name); err != nil {
 			return err
 		}
+	}
+
+	dirNames := []string{"BOUNDED_XDG_CONFIG"}
+	dirNames = append(dirNames, _XDG_VARIABLE_NAMES...)
+
+	for _, name := range dirNames {
+		path := this.environment[name]
+
+		if err := this.ensureDir(path); err != nil {
+			return err
+		}
+	}
+
+	if err := this.loadData(); err != nil {
+		return err
 	}
 
 	if err := this.validateData(); err != nil {
@@ -98,24 +132,37 @@ func (this *FileManager) LoadData() error {
 	return nil
 }
 
-func (this *FileManager) loadData(path string) error {
-	contents, err := os.ReadFile(path)
+func (this *FileManager) loadConfig() error {
+	return nil
+}
+
+func (this *FileManager) loadData() error {
+	files, err := os.ReadDir("")
 
 	if err != nil {
 		return err
 	}
 
-	var data XdgFile
+	for _, file := range files {
+		name := file.Name()
+		contents, err := os.ReadFile(name)
 
-	if err := json.Unmarshal(contents, &data); err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		var data XdgFile
+
+		if err := json.Unmarshal(contents, &data); err != nil {
+			return err
+		}
+
+		if _, ok := this.data[name]; ok {
+			return fmt.Errorf("path alread loaded: %s", name)
+		}
+
+		this.data[name] = data
 	}
-
-	if _, ok := this.data[path]; ok {
-		return fmt.Errorf("path alread loaded: %s", path)
-	}
-
-	this.data[path] = data
 
 	return nil
 }
