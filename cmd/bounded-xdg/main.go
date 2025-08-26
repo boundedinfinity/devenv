@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	_, err := bounded_xdg.NewFileManager()
+	_, err := bounded_xdg.NewBoundeManager()
 
 	if err != nil {
 		panic(err)

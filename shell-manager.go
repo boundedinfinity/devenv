@@ -1,24 +1,25 @@
 package bounded_xdg
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 
-	"github.com/boundedinfinity/bounded_xdg/shells"
+	"github.com/boundedinfinity/bounded_xdg/embedded"
 )
 
-func NewShellManager() *BoundedShellManager {
+func NewShellManager(fm *BoundedFileManager) *BoundedShellManager {
 	return &BoundedShellManager{
 		internalConfigs: map[string]BoundedShellConfig{},
+		fm:              fm,
 	}
 }
 
 type BoundedShellManager struct {
 	internalConfigs map[string]BoundedShellConfig
+	fm              *BoundedFileManager
 }
 
 func (this *BoundedShellManager) init() error {
@@ -30,7 +31,8 @@ func (this *BoundedShellManager) init() error {
 }
 
 func (this *BoundedShellManager) loadInternal() error {
-	files, err := shells.FS.ReadDir("data")
+	dir := "shells"
+	files, err := embedded.ReadDir(dir)
 
 	if err != nil {
 		return err
@@ -39,16 +41,8 @@ func (this *BoundedShellManager) loadInternal() error {
 	for _, file := range files {
 		name := file.Name()
 		if !file.IsDir() && filepath.Ext(name) == ".json" {
-			path := filepath.Join("data", name)
-			data, err := shells.FS.ReadFile(path)
-
-			if err != nil {
-				return err
-			}
-
 			var config BoundedShellConfig
-
-			if err := json.Unmarshal(data, &config); err != nil {
+			if err := embedded.UnmarshalFile(&config, dir, name); err != nil {
 				return err
 			}
 
@@ -60,7 +54,7 @@ func (this *BoundedShellManager) loadInternal() error {
 }
 
 func (this *BoundedShellManager) EnsureConfigDir(config BoundedShellConfig) error {
-	if err := dirEnsure(config.XdgConfigHome); err != nil {
+	if err := this.fm.dirEnsure(config.XdgConfigHome); err != nil {
 		return err
 	}
 

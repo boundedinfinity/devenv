@@ -5,17 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/boundedinfinity/bounded_xdg/embedded"
 )
 
 var (
-	_XDG_DEFAULTS = map[string]string{
-		"XDG_CONFIG_HOME": "$HOME/.config",
-		"XDG_DATA_HOME":   "$HOME/.local/share",
-		"XDG_STATE_HOME":  "$HOME/.local/state",
-		"XDG_CACHE_HOME":  "$HOME/.cache",
-		"BOUNDED_CONFIG":  "$XDG_CONFIG_HOME/bounded-xdg",
-	}
-
 	_XDG_VARIABLE_NAMES = []string{
 		"XDG_CONFIG_HOME",
 		"XDG_DATA_HOME",
@@ -24,101 +18,59 @@ var (
 	}
 )
 
-func NewFileManager() (*FileManager, error) {
-	fm := &FileManager{
-		environment: map[string]string{},
-		data:        map[string]XdgFile{},
-		sm:          NewShellManager(),
+func NewBoundeManager() (*BoundeManager, error) {
+	fm := NewFileManager()
+	bm := &BoundeManager{
+		data: map[string]XdgFile{},
+		sm:   NewShellManager(fm),
+		fm:   fm,
 	}
 
-	if err := fm.init(); err != nil {
+	if err := bm.init(); err != nil {
 		return nil, err
 	}
 
-	return fm, nil
+	return bm, nil
 }
 
-type FileManager struct {
-	environment map[string]string
-	data        map[string]XdgFile
-	sm          *BoundedShellManager
-}
-
-// ///////////////////////////////////////////////////////////////////////////
-// Utilities
-// ///////////////////////////////////////////////////////////////////////////
-
-func (this *FileManager) getVar(name string) string {
-	path := this.environment[name]
-	path = this.resolvePath(path)
-	return path
-}
-
-func (this *FileManager) ensureVar(name string) error {
-	v := os.Getenv(name)
-
-	if found, ok := _XDG_DEFAULTS[name]; v == "" && ok {
-		v = found
-	}
-
-	if v == "" {
-		return fmt.Errorf("environment variable %s not defined", name)
-	}
-
-	this.environment[name] = v
-	return nil
-}
-
-func (this *FileManager) ensureDir(path string) error {
-	resolved := this.resolvePath(path)
-
-	if err := dirEnsure(resolved); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (this *FileManager) resolvePath(path string) string {
-	resolve := path
-
-	for _, part := range strings.Split(path, "/") {
-		if strings.HasPrefix(part, "$") {
-			name := strings.ReplaceAll(part, "$", "")
-			if found, ok := this.environment[name]; !ok {
-				resolve = strings.ReplaceAll(path, part, found)
-			}
-		}
-	}
-
-	return resolve
+type BoundeManager struct {
+	defaults BoundedXdgDefaults
+	data     map[string]XdgFile
+	sm       *BoundedShellManager
+	fm       *BoundedFileManager
 }
 
 // ///////////////////////////////////////////////////////////////////////////
 // Load Data
 // ///////////////////////////////////////////////////////////////////////////
 
-func (this *FileManager) init() error {
+func (this *BoundeManager) init() error {
 	if err := this.sm.init(); err != nil {
 		return err
 	}
 
-	varNames := []string{"HOME", "SHELL"}
-	varNames = append(varNames, _XDG_VARIABLE_NAMES...)
+	if err := this.fm.init(); err != nil {
+		return err
+	}
+
+	if err := embedded.UnmarshalFile(&this.defaults, "defaults/config.json"); err != nil {
+		return err
+	}
+
+	this.fm.setDefaults(this.defaults.EnvironmentDefaults)
+
+	varNames := append([]string{"HOME", "SHELL", "BOUNDED_CONFIG"}, _XDG_VARIABLE_NAMES...)
 
 	for _, name := range varNames {
-		if err := this.ensureVar(name); err != nil {
+		if err := this.fm.ensureVar(name); err != nil {
 			return err
 		}
 	}
 
-	dirNames := []string{"BOUNDED_XDG_CONFIG"}
-	dirNames = append(dirNames, _XDG_VARIABLE_NAMES...)
+	dirNames := append([]string{"BOUNDED_CONFIG"}, _XDG_VARIABLE_NAMES...)
 
 	for _, name := range dirNames {
-		path := this.environment[name]
-
-		if err := this.ensureDir(path); err != nil {
+		if err := this.fm.dirEnsure("$" + name); err != nil {
 			return err
 		}
 	}
@@ -134,11 +86,11 @@ func (this *FileManager) init() error {
 	return nil
 }
 
-func (this *FileManager) loadConfig() error {
+func (this *BoundeManager) loadConfig() error {
 	return nil
 }
 
-func (this *FileManager) loadData() error {
+func (this *BoundeManager) loadData() error {
 	files, err := os.ReadDir("")
 
 	if err != nil {
@@ -169,12 +121,12 @@ func (this *FileManager) loadData() error {
 	return nil
 }
 
-func (this *FileManager) validateData() error {
+func (this *BoundeManager) validateData() error {
 	validate := func(path string, variable string, value string) error {
 		for _, part := range strings.Split(value, "/") {
 			if strings.HasPrefix(part, "$") {
 				name := strings.ReplaceAll(part, "$", "")
-				if _, ok := this.environment[name]; !ok {
+				if _, ok := this.fm.environment[name]; !ok {
 					return fmt.Errorf(
 						"%s.%s=%s: %s not found",
 						path, variable, value, part,

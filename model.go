@@ -4,7 +4,8 @@ import "github.com/boundedinfinity/rfc3339date"
 
 // https://specifications.freedesktop.org/basedir-spec/latest/
 
-type File struct {
+type BoundedXdgDefaults struct {
+	EnvironmentDefaults map[string]string `json:"environment-defaults"`
 }
 
 type BoundedXdgConfig struct {
