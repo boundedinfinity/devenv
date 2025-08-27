@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/boundedinfinity/bounded_xdg/embedded"
 )
 
 var (
@@ -16,12 +14,20 @@ var (
 		"XDG_STATE_HOME",
 		"XDG_CACHE_HOME",
 	}
+
+	_JSON_META = struct {
+		Prefix string
+		Indent string
+	}{
+		Prefix: "",
+		Indent: "    ",
+	}
 )
 
 func NewBoundeManager() (*BoundeManager, error) {
 	fm := NewFileManager()
 	bm := &BoundeManager{
-		data: map[string]XdgFile{},
+		data: map[string]BoundedProgramConfig{},
 		sm:   NewShellManager(fm),
 		fm:   fm,
 	}
@@ -35,9 +41,10 @@ func NewBoundeManager() (*BoundeManager, error) {
 
 type BoundeManager struct {
 	defaults BoundedXdgDefaults
-	data     map[string]XdgFile
+	data     map[string]BoundedProgramConfig
 	sm       *BoundedShellManager
 	fm       *BoundedFileManager
+	pm       *BoundedProgramManager
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +60,7 @@ func (this *BoundeManager) init() error {
 		return err
 	}
 
-	if err := embedded.UnmarshalFile(&this.defaults, "defaults/config.json"); err != nil {
+	if err := this.fm.embeddedUnmarshalFile(&this.defaults, "defaults/config.json"); err != nil {
 		return err
 	}
 
@@ -70,7 +77,7 @@ func (this *BoundeManager) init() error {
 	dirNames := append([]string{"BOUNDED_CONFIG"}, _XDG_VARIABLE_NAMES...)
 
 	for _, name := range dirNames {
-		if err := this.fm.dirEnsure("$" + name); err != nil {
+		if err := this.fm.fsEnsureDir("$" + name); err != nil {
 			return err
 		}
 	}
@@ -105,7 +112,7 @@ func (this *BoundeManager) loadData() error {
 			return err
 		}
 
-		var data XdgFile
+		var data BoundedProgramConfig
 
 		if err := json.Unmarshal(contents, &data); err != nil {
 			return err

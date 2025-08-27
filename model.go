@@ -14,10 +14,16 @@ type BoundedXdgConfig struct {
 }
 
 type BoundedShellConfig struct {
+	Source        string `json:"-"`
 	Name          string `json:"name"`
 	XdgConfigHome string `json:"xdg-config-home"`
 	BinaryName    string `json:"binary-name"`
 	Homepage      string `json:"homepage"`
+}
+
+type BoundedShellState struct {
+	Config  BoundedShellConfig          `json:"config"`
+	Updated rfc3339date.Rfc3339DateTime `json:"updated"`
 }
 
 type BoundedVariable struct {
@@ -26,7 +32,7 @@ type BoundedVariable struct {
 	LastModified rfc3339date.Rfc3339DateTime `json:"last-modified"`
 }
 
-type XdgFile struct {
+type BoundedProgramConfig struct {
 	Name         string        `json:"name"`
 	NotCompliant bool          `json:"not-compliant"`
 	Variables    []XdgVariable `json:"variables"`
