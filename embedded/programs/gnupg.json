@@ -2,7 +2,8 @@
     "name": "GnuPG",
     "variables": [
         {
-            "home-path": "$HOME/.gnupg",
+            "name": "$GNUPGHOME",
+            "default-path": "$HOME/.gnupg",
             "xdg-path": "$XDG_DATA_HOME/gnupg"
         }
     ],

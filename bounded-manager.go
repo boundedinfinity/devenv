@@ -1,12 +1,5 @@
 package bounded_xdg
 
-import (
-	"encoding/json"
-	"fmt"
-	"os"
-	"strings"
-)
-
 var (
 	_XDG_VARIABLE_NAMES = []string{
 		"XDG_CONFIG_HOME",
@@ -25,12 +18,41 @@ var (
 )
 
 func NewBoundeManager() (*BoundeManager, error) {
-	fm := NewFileManager()
-	bm := &BoundeManager{
-		data: map[string]BoundedProgramConfig{},
-		sm:   NewShellManager(fm),
-		fm:   fm,
+	fm := newFileManager()
+
+	var defaults BoundedXdgDefaults
+
+	if err := fm.embeddedUnmarshalFile(&defaults, "config/config.json"); err != nil {
+		return nil, err
 	}
+
+	fm.setDefaults(defaults.EnvironmentDefaults)
+
+	if err := fm.init(); err != nil {
+		return nil, err
+	}
+
+	varNames := append([]string{"HOME", "SHELL", "BOUNDED_CONFIG"}, _XDG_VARIABLE_NAMES...)
+
+	for _, name := range varNames {
+		if err := fm.ensureVar(name); err != nil {
+			return nil, err
+		}
+	}
+
+	sm := newShellManager(fm)
+
+	if err := sm.init(); err != nil {
+		return nil, err
+	}
+
+	pm := newProgramManager(fm, sm)
+
+	if err := pm.init(); err != nil {
+		return nil, err
+	}
+
+	bm := &BoundeManager{defaults: defaults, fm: fm, sm: sm, pm: pm}
 
 	if err := bm.init(); err != nil {
 		return nil, err
@@ -41,7 +63,6 @@ func NewBoundeManager() (*BoundeManager, error) {
 
 type BoundeManager struct {
 	defaults BoundedXdgDefaults
-	data     map[string]BoundedProgramConfig
 	sm       *BoundedShellManager
 	fm       *BoundedFileManager
 	pm       *BoundedProgramManager
@@ -52,28 +73,6 @@ type BoundeManager struct {
 // ///////////////////////////////////////////////////////////////////////////
 
 func (this *BoundeManager) init() error {
-	if err := this.sm.init(); err != nil {
-		return err
-	}
-
-	if err := this.fm.init(); err != nil {
-		return err
-	}
-
-	if err := this.fm.embeddedUnmarshalFile(&this.defaults, "defaults/config.json"); err != nil {
-		return err
-	}
-
-	this.fm.setDefaults(this.defaults.EnvironmentDefaults)
-
-	varNames := append([]string{"HOME", "SHELL", "BOUNDED_CONFIG"}, _XDG_VARIABLE_NAMES...)
-
-	for _, name := range varNames {
-		if err := this.fm.ensureVar(name); err != nil {
-			return err
-		}
-	}
-
 	dirNames := append([]string{"BOUNDED_CONFIG"}, _XDG_VARIABLE_NAMES...)
 
 	for _, name := range dirNames {
@@ -82,79 +81,13 @@ func (this *BoundeManager) init() error {
 		}
 	}
 
-	if err := this.loadData(); err != nil {
-		return err
-	}
-
-	if err := this.validateData(); err != nil {
-		return err
-	}
-
 	return nil
 }
 
-func (this *BoundeManager) loadConfig() error {
-	return nil
+func (this *BoundeManager) Shells() []*BoundedShellState {
+	return this.sm.States()
 }
 
-func (this *BoundeManager) loadData() error {
-	files, err := os.ReadDir("")
-
-	if err != nil {
-		return err
-	}
-
-	for _, file := range files {
-		name := file.Name()
-		contents, err := os.ReadFile(name)
-
-		if err != nil {
-			return err
-		}
-
-		var data BoundedProgramConfig
-
-		if err := json.Unmarshal(contents, &data); err != nil {
-			return err
-		}
-
-		if _, ok := this.data[name]; ok {
-			return fmt.Errorf("path alread loaded: %s", name)
-		}
-
-		this.data[name] = data
-	}
-
-	return nil
-}
-
-func (this *BoundeManager) validateData() error {
-	validate := func(path string, variable string, value string) error {
-		for _, part := range strings.Split(value, "/") {
-			if strings.HasPrefix(part, "$") {
-				name := strings.ReplaceAll(part, "$", "")
-				if _, ok := this.fm.environment[name]; !ok {
-					return fmt.Errorf(
-						"%s.%s=%s: %s not found",
-						path, variable, value, part,
-					)
-				}
-			}
-		}
-		return nil
-	}
-
-	for path, data := range this.data {
-		for _, variable := range data.Variables {
-			if err := validate(path, "home-path", variable.HomePath); err != nil {
-				return err
-			}
-
-			if err := validate(path, "xdg-path", variable.XdgPath); err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
+func (this *BoundeManager) Programs() []*BoundedProgramState {
+	return this.pm.States()
 }

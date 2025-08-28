@@ -15,7 +15,7 @@ import (
 //go:embed embedded/*
 var embedded embed.FS
 
-func NewFileManager() *BoundedFileManager {
+func newFileManager() *BoundedFileManager {
 	return &BoundedFileManager{
 		defaults:     map[string]string{},
 		environment:  map[string]string{},
@@ -36,29 +36,6 @@ func (this *BoundedFileManager) init() error {
 // ///////////////////////////////////////////////////////////////////////////
 // Utilities
 // ///////////////////////////////////////////////////////////////////////////
-
-type IsSameResult struct {
-	Match bool
-	SumA  string
-	SumB  string
-}
-
-func (this *BoundedFileManager) isSame(a, b []byte) IsSameResult {
-	sumA := this.calcHash(a)
-	sumB := this.calcHash(b)
-	return IsSameResult{
-		Match: sumA == sumB,
-		SumA:  sumA,
-		SumB:  sumB,
-	}
-}
-
-func (this *BoundedFileManager) calcHash(data []byte) string {
-	h := sha512.New()
-	h.Write(data)
-	sum := h.Sum(nil)
-	return string(sum)
-}
 
 func (this *BoundedFileManager) resolveVar(name string) string {
 	for k, v := range this.environment {
@@ -86,6 +63,7 @@ func (this *BoundedFileManager) resolvePath(path ...string) string {
 func (this *BoundedFileManager) setDefaults(defaults map[string]string) {
 	for k, v := range defaults {
 		this.defaults[k] = v
+		this.environment[k] = v
 	}
 }
 
@@ -110,22 +88,43 @@ func (this *BoundedFileManager) ensureVar(name string) error {
 	return nil
 }
 
-func (this *BoundedFileManager) isSameJson(jsonAny any, pathFs string) (IsSameResult, error) {
-	jsonData, err := json.MarshalIndent(jsonAny, _JSON_META.Prefix, _JSON_META.Indent)
+func (this *BoundedFileManager) calcHash(data []byte) string {
+	h := sha512.New()
+	h.Write(data)
+	sum := h.Sum(nil)
+	return string(sum)
+}
+
+type IsSameResult struct {
+	Match bool
+	SumA  string
+	SumB  string
+}
+
+func (this *BoundedFileManager) isSameData(a, b []byte) IsSameResult {
+	sumA := this.calcHash(a)
+	sumB := this.calcHash(b)
+	return IsSameResult{
+		Match: sumA == sumB,
+		SumA:  sumA,
+		SumB:  sumB,
+	}
+}
+
+func (this *BoundedFileManager) isSameObject(a, b any) (IsSameResult, error) {
+	aData, err := json.MarshalIndent(a, _JSON_META.Prefix, _JSON_META.Indent)
 
 	if err != nil {
 		return IsSameResult{}, err
 	}
 
-	fsData, err := os.ReadFile(pathFs)
+	bData, err := json.MarshalIndent(b, _JSON_META.Prefix, _JSON_META.Indent)
 
 	if err != nil {
 		return IsSameResult{}, err
 	}
 
-	fsData = bytes.TrimSpace(fsData)
-	result := this.isSame(jsonData, fsData)
-	return result, nil
+	return this.isSameData(aData, bData), nil
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -171,11 +170,11 @@ type PathExistsResult struct {
 }
 
 func (this *BoundedFileManager) fsExists(path ...string) (PathExistsResult, error) {
-	var result PathExistsResult
-	realPath := filepath.Join(path...)
+	result := PathExistsResult{
+		ResolvedPath: this.resolvePath(path...),
+	}
 
-	result.ResolvedPath = this.resolvePath(realPath)
-	info, err := os.Stat(result.ResolvedPath)
+	info, err := os.Lstat(result.ResolvedPath)
 
 	switch {
 	case err != nil && os.IsNotExist(err):
@@ -185,7 +184,7 @@ func (this *BoundedFileManager) fsExists(path ...string) (PathExistsResult, erro
 	default:
 		mode := info.Mode()
 		result.Exists = true
-		result.IsDir = mode == fs.ModeDir
+		result.IsDir = info.IsDir()
 		result.IsSymLink = mode == fs.ModeSymlink
 		return result, nil
 	}
@@ -227,7 +226,7 @@ func (this *BoundedFileManager) fsWriteFile(data []byte, path ...string) error {
 			return err
 		}
 
-		result := this.isSame(data, current)
+		result := this.isSameData(data, current)
 
 		if !result.Match {
 			return fmt.Errorf("%s already exists and is modified", rpath)

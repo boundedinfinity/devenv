@@ -1,5 +1,10 @@
 {
     "name": "bash",
-    "homepage": "https://www.gnu.org/software/bash/",
-    "xdg-config-home": "$XDG_CONFIG_HOME/bash/conf.d"
+    "script-ext": "bash",
+    "xdg-config-home": "$XDG_CONFIG_HOME/bash/conf.d",
+    "not-compliant": true,
+    "variables": {},
+    "ref": {
+        "homepage": "https://www.gnu.org/software/bash/"
+    }
 }

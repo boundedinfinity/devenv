@@ -1,5 +1,6 @@
 {
     "name": "fish",
+    "script-ext": "fish",
     "homepage": "https://fishshell.com/",
     "xdg-config-home": "$XDG_CONFIG_HOME/fish/conf.d"
 }

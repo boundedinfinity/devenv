@@ -1,7 +1,5 @@
 package bounded_xdg
 
-import "github.com/boundedinfinity/rfc3339date"
-
 // https://specifications.freedesktop.org/basedir-spec/latest/
 
 type BoundedXdgDefaults struct {
@@ -14,36 +12,51 @@ type BoundedXdgConfig struct {
 }
 
 type BoundedShellConfig struct {
-	Source        string `json:"-"`
-	Name          string `json:"name"`
-	XdgConfigHome string `json:"xdg-config-home"`
-	BinaryName    string `json:"binary-name"`
-	Homepage      string `json:"homepage"`
+	Source       string            `json:"-"`
+	Name         string            `json:"name"`
+	BinaryName   string            `json:"binary-name"`
+	ScriptExt    string            `json:"script-ext"`
+	TemplatePath string            `json:"template-path"`
+	Homepage     string            `json:"homepage"`
+	NotCompliant bool              `json:"not-compliant"`
+	Variables    []BoundedVariable `json:"variables"`
+	Ref          struct {
+		Homepage string `json:"homepage"`
+	} `json:"ref"`
 }
 
 type BoundedShellState struct {
-	Config  BoundedShellConfig          `json:"config"`
-	Updated rfc3339date.Rfc3339DateTime `json:"updated"`
+	Config   BoundedShellConfig
+	IsInPath bool
+	Current  bool
 }
 
 type BoundedVariable struct {
-	XdgFile      string                      `json:"xdg-file"`
-	UserIgnored  bool                        `json:"user-ignored"`
-	LastModified rfc3339date.Rfc3339DateTime `json:"last-modified"`
+	Name          string `json:"name"`
+	XdgPath       string `json:"xdg-path"`
+	DefaultPath   string `json:"default-path"`
+	StockDisabled bool   `json:"stock-disabled"`
 }
 
 type BoundedProgramConfig struct {
-	Name         string        `json:"name"`
-	NotCompliant bool          `json:"not-compliant"`
-	Variables    []XdgVariable `json:"variables"`
-	Ref          []struct {
+	Source        string            `json:"-"`
+	Name          string            `json:"name"`
+	NotCompliant  bool              `json:"not-compliant"`
+	StockDisabled bool              `json:"stock-disabled"`
+	Variables     []BoundedVariable `json:"variables"`
+	Ref           struct {
 		Homepage string `json:"homepage"`
 		XdgNinja string `json:"xdg-ninja"`
 	} `json:"ref"`
 }
 
-type XdgVariable struct {
-	HomePath string `json:"home-path"`
-	XdgPath  string `json:"xdg-path"`
-	IsFile   string `json:"is-file"`
+type BoundedProgramState struct {
+	Config BoundedProgramConfig
+	Shells []BoundedProgramShell
+}
+
+type BoundedProgramShell struct {
+	State     BoundedShellState
+	Available bool
+	Enabled   bool
 }

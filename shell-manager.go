@@ -3,37 +3,30 @@ package bounded_xdg
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"os"
 	"os/exec"
 	"path/filepath"
 )
 
-func NewShellManager(fm *BoundedFileManager) *BoundedShellManager {
+func newShellManager(fm *BoundedFileManager) *BoundedShellManager {
 	return &BoundedShellManager{
-		fsRoot:          "$BOUNDED_CONFIG/shells",
-		embeddedRoot:    "shells",
-		internalConfigs: map[string]BoundedShellConfig{},
-		fm:              fm,
+		fsRoot:       "$BOUNDED_CONFIG/shells",
+		embeddedRoot: "shells",
+		states:       map[string]*BoundedShellState{},
+		fm:           fm,
 	}
 }
 
 type BoundedShellManager struct {
-	fsRoot          string
-	embeddedRoot    string
-	internalConfigs map[string]BoundedShellConfig
-	fm              *BoundedFileManager
+	fsRoot       string
+	embeddedRoot string
+	states       map[string]*BoundedShellState
+	fm           *BoundedFileManager
 }
 
 func (this *BoundedShellManager) init() error {
-	if err := this.loadInternal(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (this *BoundedShellManager) loadInternal() error {
-	files, err := embedded.ReadDir(this.embeddedRoot)
+	files, err := this.fm.embeddedReadDir(this.embeddedRoot)
 
 	if err != nil {
 		return err
@@ -41,17 +34,52 @@ func (this *BoundedShellManager) loadInternal() error {
 
 	for _, file := range files {
 		name := file.Name()
-		if !file.IsDir() && filepath.Ext(name) == ".json" {
-			var config BoundedShellConfig
-			if err := this.fm.embeddedUnmarshalFile(&config, this.embeddedRoot, name); err != nil {
-				return err
-			}
 
-			this.internalConfigs[config.Name] = config
+		if filepath.Ext(name) != ".json" {
+			continue
+		}
+
+		var state BoundedShellState
+
+		if err := this.fm.embeddedUnmarshalFile(&state.Config, this.embeddedRoot, name); err != nil {
+			return err
+		}
+
+		inPath, err := this.IsShellInPath(state.Config)
+
+		if err != nil {
+			return err
+		}
+
+		state.IsInPath = inPath
+		state.Config.Source = this.fm.resolvePath(this.embeddedRoot, name)
+
+		this.states[state.Config.Name] = &state
+	}
+
+	current, err := this.CurrentConfig()
+
+	if err != nil {
+		return err
+	}
+
+	for _, state := range this.states {
+		if state.Config.Name == current.Config.Name {
+			state.Current = true
 		}
 	}
 
 	return nil
+}
+
+func (this *BoundedShellManager) States() []*BoundedShellState {
+	var states []*BoundedShellState
+
+	for _, state := range this.states {
+		states = append(states, state)
+	}
+
+	return states
 }
 
 func (this *BoundedShellManager) WriteConfig(config BoundedShellConfig) error {
@@ -69,7 +97,7 @@ func (this *BoundedShellManager) WriteConfig(config BoundedShellConfig) error {
 	return nil
 }
 
-func (this *BoundedShellManager) IsInPath(config BoundedShellConfig) (bool, error) {
+func (this *BoundedShellManager) IsShellInPath(config BoundedShellConfig) (bool, error) {
 	var found bool
 	name := config.Name
 
@@ -90,13 +118,13 @@ func (this *BoundedShellManager) IsInPath(config BoundedShellConfig) (bool, erro
 	return found, nil
 }
 
-func (this *BoundedShellManager) CurrentConfig() (BoundedShellConfig, error) {
-	var config BoundedShellConfig
+func (this *BoundedShellManager) CurrentConfig() (BoundedShellState, error) {
+	var state BoundedShellState
 
 	shell := os.Getenv("SHELL")
 
 	if shell == "" {
-		return config, errors.New("can't determine shell")
+		return state, errors.New("can't determine shell")
 	}
 
 	shell = filepath.Base(shell)
@@ -104,20 +132,45 @@ func (this *BoundedShellManager) CurrentConfig() (BoundedShellConfig, error) {
 	return this.GetConfig(shell)
 }
 
-func (this *BoundedShellManager) GetConfig(shell string) (BoundedShellConfig, error) {
-	var config BoundedShellConfig
+func (this *BoundedShellManager) GetConfig(shell string) (BoundedShellState, error) {
+	var state *BoundedShellState
 	var ok bool
 
 	if shell == "" {
-		return config, errors.New("can't determine shell")
+		return *state, errors.New("can't determine shell")
 	}
 
 	shell = filepath.Base(shell)
-	config, ok = this.internalConfigs[shell]
+	state, ok = this.states[shell]
 
 	if !ok {
-		return config, fmt.Errorf("no config for shell %s", shell)
+		return *state, fmt.Errorf("no config for shell %s", shell)
 	}
 
-	return config, nil
+	return *state, nil
+}
+
+func (this *BoundedShellManager) GetTemplate(config BoundedShellConfig) (*template.Template, error) {
+	var path string
+
+	if config.TemplatePath != "" {
+		path = config.TemplatePath
+	} else {
+		path = config.Name + ".tmpl"
+	}
+
+	data, err := this.fm.embeddedReadFile(this.embeddedRoot, path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	content := string(data)
+	tmpl, err := template.New(config.Name).Parse(content)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tmpl, nil
 }

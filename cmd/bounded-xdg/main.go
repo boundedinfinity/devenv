@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/boundedinfinity/bounded_xdg"
 )
 
 func main() {
-	_, err := bounded_xdg.NewBoundeManager()
+	bm, err := bounded_xdg.NewBoundeManager()
 
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(bm.Shells())
 }
