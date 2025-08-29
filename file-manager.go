@@ -190,8 +190,9 @@ func (this *BoundedFileManager) fsExists(path ...string) (PathExistsResult, erro
 	}
 }
 
-func (this *BoundedFileManager) fsEnsureDir(path string) error {
-	result, err := this.fsExists(path)
+func (this *BoundedFileManager) fsEnsureDir(path ...string) error {
+	resovled := this.resolvePath(path...)
+	result, err := this.fsExists(resovled)
 
 	if err != nil {
 		return err

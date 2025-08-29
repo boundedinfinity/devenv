@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/boundedinfinity/bounded_xdg"
 )
 
@@ -13,5 +11,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(bm.Shells())
+	bounded_xdg.PP(bm.Shells())
+
+	// if err := bm.Enabled("bash", "gnupg", true); err != nil {
+	// 	panic(err)
+	// }
 }

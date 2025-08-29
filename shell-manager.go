@@ -7,13 +7,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func newShellManager(fm *BoundedFileManager) *BoundedShellManager {
 	return &BoundedShellManager{
 		fsRoot:       "$BOUNDED_CONFIG/shells",
 		embeddedRoot: "shells",
-		states:       map[string]*BoundedShellState{},
+		configs:      map[string]*BoundedShellConfig{},
 		fm:           fm,
 	}
 }
@@ -21,7 +22,7 @@ func newShellManager(fm *BoundedFileManager) *BoundedShellManager {
 type BoundedShellManager struct {
 	fsRoot       string
 	embeddedRoot string
-	states       map[string]*BoundedShellState
+	configs      map[string]*BoundedShellConfig
 	fm           *BoundedFileManager
 }
 
@@ -39,47 +40,29 @@ func (this *BoundedShellManager) init() error {
 			continue
 		}
 
-		var state BoundedShellState
+		var config BoundedShellConfig
 
-		if err := this.fm.embeddedUnmarshalFile(&state.Config, this.embeddedRoot, name); err != nil {
+		if err := this.fm.embeddedUnmarshalFile(&config, this.embeddedRoot, name); err != nil {
 			return err
 		}
 
-		inPath, err := this.IsShellInPath(state.Config)
+		config.Source = this.fm.resolvePath(this.embeddedRoot, name)
 
-		if err != nil {
-			return err
-		}
-
-		state.IsInPath = inPath
-		state.Config.Source = this.fm.resolvePath(this.embeddedRoot, name)
-
-		this.states[state.Config.Name] = &state
-	}
-
-	current, err := this.CurrentConfig()
-
-	if err != nil {
-		return err
-	}
-
-	for _, state := range this.states {
-		if state.Config.Name == current.Config.Name {
-			state.Current = true
-		}
+		this.configs[config.Name] = &config
+		this.configs[strings.ToLower(config.Name)] = &config
 	}
 
 	return nil
 }
 
-func (this *BoundedShellManager) States() []*BoundedShellState {
-	var states []*BoundedShellState
+func (this *BoundedShellManager) All() []*BoundedShellConfig {
+	var configs []*BoundedShellConfig
 
-	for _, state := range this.states {
-		states = append(states, state)
+	for _, config := range this.configs {
+		configs = append(configs, config)
 	}
 
-	return states
+	return configs
 }
 
 func (this *BoundedShellManager) WriteConfig(config BoundedShellConfig) error {
@@ -118,45 +101,43 @@ func (this *BoundedShellManager) IsShellInPath(config BoundedShellConfig) (bool,
 	return found, nil
 }
 
-func (this *BoundedShellManager) CurrentConfig() (BoundedShellState, error) {
-	var state BoundedShellState
+func (this *BoundedShellManager) CurrentConfig() (*BoundedShellConfig, error) {
+	var config *BoundedShellConfig
 
 	shell := os.Getenv("SHELL")
 
 	if shell == "" {
-		return state, errors.New("can't determine shell")
+		return config, errors.New("can't determine shell")
 	}
 
 	shell = filepath.Base(shell)
-
-	return this.GetConfig(shell)
+	return this.GetState(shell)
 }
 
-func (this *BoundedShellManager) GetConfig(shell string) (BoundedShellState, error) {
-	var state *BoundedShellState
+func (this *BoundedShellManager) GetState(shell string) (*BoundedShellConfig, error) {
+	var config *BoundedShellConfig
 	var ok bool
 
 	if shell == "" {
-		return *state, errors.New("can't determine shell")
+		return config, errors.New("can't determine shell")
 	}
 
-	shell = filepath.Base(shell)
-	state, ok = this.states[shell]
+	config, ok = this.configs[shell]
 
 	if !ok {
-		return *state, fmt.Errorf("no config for shell %s", shell)
+		return config, fmt.Errorf("no config for shell %s", shell)
 	}
 
-	return *state, nil
+	return config, nil
 }
 
-func (this *BoundedShellManager) GetTemplate(config BoundedShellConfig) (*template.Template, error) {
+func (this *BoundedShellManager) getTemplate(config BoundedShellConfig) (*template.Template, error) {
 	var path string
 
 	if config.TemplatePath != "" {
 		path = config.TemplatePath
 	} else {
-		path = config.Name + ".tmpl"
+		path = strings.ToLower(config.Name) + ".tmpl"
 	}
 
 	data, err := this.fm.embeddedReadFile(this.embeddedRoot, path)
@@ -166,7 +147,7 @@ func (this *BoundedShellManager) GetTemplate(config BoundedShellConfig) (*templa
 	}
 
 	content := string(data)
-	tmpl, err := template.New(config.Name).Parse(content)
+	tmpl, err := template.New(strings.ToLower(config.Name)).Funcs(funcMap).Parse(content)
 
 	if err != nil {
 		return nil, err

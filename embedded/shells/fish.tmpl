@@ -1,5 +1,6 @@
-# Bounded XDG managed file for {{ .Name }}
-# {{ .Ref.Homepage }}
+### Managed by Bounded XDG
+# {{ .Name }} {{ index .Ref "Home Page" }}
 {{ range $variable := .Variables }}
 set --universal --export {{ replace $variable.Name "$" ""  }}  {{ $variable.XdgPath }}
 {{ end }}
+### Managed by Bounded XDG

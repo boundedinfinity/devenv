@@ -1,10 +1,18 @@
 {
     "name": "bash",
     "script-ext": "bash",
-    "xdg-config-home": "$XDG_CONFIG_HOME/bash/conf.d",
+    "config-root": "$XDG_CONFIG_HOME/bash/conf.d",
     "not-compliant": true,
-    "variables": {},
+    "variables": [
+        {
+            "name": ".bash_logout",
+            "legacy-path": "$HOME/.bash_logout",
+            "xdg-path": "$XDG_CONFIG_HOME/bash/logout.bash",
+            "description": "When an interactive login shell exits, or a non-interactive login shell executes the exit builtin command, Bash reads and executes commands from the file, if it exists."
+        }
+    ],
     "ref": {
-        "homepage": "https://www.gnu.org/software/bash/"
+        "Home Page": "https://www.gnu.org/software/bash",
+        "Bash Startup Files": "https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html"
     }
 }
